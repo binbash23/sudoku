@@ -35,7 +35,7 @@ def randomize(a: array):
 def show(a: array):
     print("    C1 C2 C3 C4 C5 C6 C7 C8 C9")
     for i in range(0, 9):
-        print(" L" + str(i + 1) + " ", end=" ")
+        print(" R" + str(i + 1) + " ", end=" ")
         for j in range(0, 9):
             print(a[i, j] + " ", end=" ")
         print()
@@ -82,11 +82,45 @@ def column_has_duplicates(a: array, column_nr: int) -> bool:
     return False
 
 
+def row_has_duplicates(a: array, row_nr: int) -> bool:
+    numbers = array(range(1, 10))
+    matched = False
+    for j in range(0, 9):
+        #print("Checking: array[" + str(j) + ", " + str(row_nr) + "] : " + str(a[row_nr, j]))
+        if a[row_nr, j] == N:
+            #print("Found N value, skipping")
+            continue
+        matched = False
+        for x in range(0, numbers.size):
+            # print("Verifying: " + str(a[j, column_nr]) + " with " + str(numbers[x]))
+            if str(a[row_nr, j]) == str(numbers[x]):
+                # print("Found: " + str(numbers[x]))
+                matched = True
+                # print("Deleting " + str(numbers[x]) + " from numbers array")
+                numbers = numpy.delete(numbers, x)
+                break
+    if not matched:
+        return True
+    return False
+
+
+
 show(s)
 print()
 
-print("Column 1 has duplicates: " + str(column_has_duplicates(s, 0)))
-print("Column 2 has duplicates: " + str(column_has_duplicates(s, 1)))
+
+#print("Column 1 has duplicates: " + str(column_has_duplicates(s, 0)))
+#print("Column 2 has duplicates: " + str(column_has_duplicates(s, 1)))
+
+#print("Row 4 has duplicates: " + str(row_has_duplicates(s, 3)))
+#print("Row 2 has duplicates: " + str(row_has_duplicates(s, 1)))
+
+#for f in range(0, 9):
+#    print("Row " + str(f+1) + " has duplicates: " + str(row_has_duplicates(s, f)))
+
+# for f in range(0, 9):
+#     #print("Row " + str(f+1) + " has duplicates: " + str(row_has_duplicates(s, f)))
+#     count_nulls_in_row(s, f)
 
 #empty(s)
 #show(s)
