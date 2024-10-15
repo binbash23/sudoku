@@ -138,14 +138,14 @@ def columns_have_duplicates(a: array, verbose: bool=False) -> bool:
 def count_nulls_in_rows(a: array, verbose: bool=False) -> int:
     count_nulls=0
     for i in range(0, 9):
-        count_nulls+=count_nulls_in_row(a, i)
+        count_nulls+=count_nulls_in_row(a, i, verbose)
     return count_nulls
 
 
 def count_nulls_in_columns(a: array, verbose: bool=False) -> int:
     count_nulls=0
     for i in range(0, 9):
-        count_nulls+=count_nulls_in_column(a, i)
+        count_nulls+=count_nulls_in_column(a, i, verbose)
     return count_nulls
 
 
@@ -153,8 +153,8 @@ def show_sudoku_status(a):
     print("== Analyzing sudoku")
     print("== Duplicate checking in rows    : " + str(rows_have_duplicates(a)))
     print("== Duplicate checking in columns : " + str(columns_have_duplicates(a)))
-    print("== Nulls in rows                 : " + str(count_nulls_in_rows(a)))
-    print("== Nulls in columns              : " + str(count_nulls_in_columns(a)))
+    print("== Nulls in rows                 : " + str(count_nulls_in_rows(a, True)))
+    print("== Nulls in columns              : " + str(count_nulls_in_columns(a, True)))
 
 
 def main():
