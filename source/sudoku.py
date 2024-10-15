@@ -13,10 +13,6 @@ from math import trunc
 
 # Variables section
 N = 0
-# s = array(
-#    [[1, 1, 1, 1, N, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7, 8, 9, 1], [3, 1, 1, 1, 1, 1, 1, 1, 1], [4, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [5, 1, 1, 1, 1, 1, 1, 1, 1], [6, 1, 1, 1, 1, 1, 1, 1, 1], [7, 1, 1, 1, 1, 1, 1, 1, 1], [8, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [9, 1, 1, 1, 1, 1, 1, 1, 1]])
 
 
 # Functions section
@@ -119,9 +115,10 @@ def main():
     a = deserialize_array()
     show(a)
     #print(a)
-    empty(a)
-    show(a)
-    serialize_array(a)
+    #empty(a)
+    #randomize(a)
+    #show(a)
+    #serialize_array(a)
 
 
 #print("Column 1 has duplicates: " + str(column_has_duplicates(s, 0)))
