@@ -49,22 +49,26 @@ def deserialize_array(filename: str="sudoku.txt") -> array:
     return numpy.loadtxt(filename, delimiter=",", skiprows=1)
 
 
-def count_nulls_in_row(a: array, row_nr: int) -> int:
+def count_nulls_in_row(a: array, row_nr: int, verbose: bool=False) -> int:
     count_nulls = 0
     for j in range(0, 9):
         if a[row_nr, j] == N:
             count_nulls += 1
-    print("Row " + str(row_nr) + " has " + str(count_nulls) + " nulls.")
-    return False
+    # print("Row    " + str(row_nr+1) + " has " + str(count_nulls) + " nulls.")
+    if verbose:
+        print("Nulls in R" + str(row_nr + 1) + " : " + str(count_nulls))
+    return count_nulls
 
 
-def count_nulls_in_column(a: array, column_nr: int) -> int:
+def count_nulls_in_column(a: array, column_nr: int, verbose: bool=False) -> int:
     count_nulls = 0
     for j in range(0, 9):
         if a[j, column_nr] == N:
             count_nulls += 1
-    print("Column " + str(column_nr) + " has " + str(count_nulls) + " nulls.")
-    return False
+    # print("Column " + str(column_nr+1) + " has " + str(count_nulls) + " nulls.")
+    if verbose:
+        print("Nulls in C" + str(column_nr + 1) + " : " + str(count_nulls))
+    return count_nulls
 
 
 def column_has_duplicates(a: array, column_nr: int) -> bool:
@@ -84,9 +88,10 @@ def column_has_duplicates(a: array, column_nr: int) -> bool:
                 # print("Deleting " + str(numbers[x]) + " from numbers array")
                 numbers = numpy.delete(numbers, x)
                 break
-    if not matched:
+    if matched:
         return True
-    return False
+    else:
+        return False
 
 
 def row_has_duplicates(a: array, row_nr: int) -> bool:
@@ -106,14 +111,56 @@ def row_has_duplicates(a: array, row_nr: int) -> bool:
                 # print("Deleting " + str(numbers[x]) + " from numbers array")
                 numbers = numpy.delete(numbers, x)
                 break
-    if not matched:
+    if matched:
         return True
+    else:
+        return False
+
+
+def rows_have_duplicates(a: array, verbose: bool=False) -> bool:
+    for i in range(0, 9):
+        if verbose:
+            print("Duplicates in R" + str(i+1) + ": " + str(row_has_duplicates(a, i)))
+        if row_has_duplicates(a, i):
+            return True
     return False
+
+
+def columns_have_duplicates(a: array, verbose: bool=False) -> bool:
+    for i in range(0, 9):
+        if verbose:
+            print("Duplicates in R" + str(i+1) + ": " + str(column_has_duplicates(a, i)))
+        if column_has_duplicates(a, i):
+            return True
+    return False
+
+
+def count_nulls_in_rows(a: array, verbose: bool=False) -> int:
+    count_nulls=0
+    for i in range(0, 9):
+        count_nulls+=count_nulls_in_row(a, i)
+    return count_nulls
+
+
+def count_nulls_in_columns(a: array, verbose: bool=False) -> int:
+    count_nulls=0
+    for i in range(0, 9):
+        count_nulls+=count_nulls_in_column(a, i)
+    return count_nulls
+
+
+def show_sudoku_status(a):
+    print("== Analyzing sudoku")
+    print("== Duplicate checking in rows    : " + str(rows_have_duplicates(a)))
+    print("== Duplicate checking in columns : " + str(columns_have_duplicates(a)))
+    print("== Nulls in rows                 : " + str(count_nulls_in_rows(a)))
+    print("== Nulls in columns              : " + str(count_nulls_in_columns(a)))
 
 
 def main():
     a = deserialize_array()
     show(a)
+    show_sudoku_status(a)
     #print(a)
     #empty(a)
     #randomize(a)
