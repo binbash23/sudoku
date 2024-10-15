@@ -9,13 +9,14 @@ sudoku.py
 import random
 from numpy import array
 import numpy
+from math import trunc
 
 # Variables section
-N = '?'
-s = array(
-    [[1, 1, 1, 1, N, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7, 8, 9, 1], [3, 1, 1, 1, 1, 1, 1, 1, 1], [4, 1, 1, 1, 1, 1, 1, 1, 1],
-     [5, 1, 1, 1, 1, 1, 1, 1, 1], [6, 1, 1, 1, 1, 1, 1, 1, 1], [7, 1, 1, 1, 1, 1, 1, 1, 1], [8, 1, 1, 1, 1, 1, 1, 1, 1],
-     [9, 1, 1, 1, 1, 1, 1, 1, 1]])
+N = 0
+# s = array(
+#    [[1, 1, 1, 1, N, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7, 8, 9, 1], [3, 1, 1, 1, 1, 1, 1, 1, 1], [4, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [5, 1, 1, 1, 1, 1, 1, 1, 1], [6, 1, 1, 1, 1, 1, 1, 1, 1], [7, 1, 1, 1, 1, 1, 1, 1, 1], [8, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [9, 1, 1, 1, 1, 1, 1, 1, 1]])
 
 
 # Functions section
@@ -33,13 +34,23 @@ def randomize(a: array):
 
 
 def show(a: array):
-    print("    C1 C2 C3 C4 C5 C6 C7 C8 C9")
+    print("     C1 C2 C3 C4 C5 C6 C7 C8 C9")
+    print()
     for i in range(0, 9):
         print(" R" + str(i + 1) + " ", end=" ")
         for j in range(0, 9):
-            print(a[i, j] + " ", end=" ")
+            # print(str(a[i, j]) + " ", end=" ")
+            print(str(trunc(a[i, j])) + " ", end=" ")
         print()
     print()
+
+
+def serialize_array(a: array, filename:  str="sudoku.txt"):
+    numpy.savetxt(filename, a, delimiter=',', header='Sudoku', fmt='%d')
+
+
+def deserialize_array(filename: str="sudoku.txt") -> array:
+    return numpy.loadtxt(filename, delimiter=",", skiprows=1)
 
 
 def count_nulls_in_row(a: array, row_nr: int) -> int:
@@ -104,9 +115,13 @@ def row_has_duplicates(a: array, row_nr: int) -> bool:
     return False
 
 
-
-show(s)
-print()
+def main():
+    a = deserialize_array()
+    show(a)
+    #print(a)
+    empty(a)
+    show(a)
+    serialize_array(a)
 
 
 #print("Column 1 has duplicates: " + str(column_has_duplicates(s, 0)))
@@ -130,3 +145,6 @@ print()
 
 #count_nulls_in_row(s, 3)
 #count_nulls_in_column(s, 4)
+
+if __name__ == '__main__':
+    main()
