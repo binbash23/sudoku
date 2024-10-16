@@ -121,47 +121,47 @@ def possible_numbers_in_sector(a: array, sector: int, verbose: bool=False) -> ar
         for x in range(0, 3):
             for y in range(0,3):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 2:
         for x in range(0, 3):
             for y in range(3,6):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 3:
         for x in range(0, 3):
             for y in range(6,9):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 4:
         for x in range(3, 6):
             for y in range(0,3):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 5:
         for x in range(3, 6):
             for y in range(3,6):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 6:
         for x in range(3, 6):
             for y in range(6,9):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 7:
         for x in range(6, 9):
             for y in range(0,3):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 8:
         for x in range(6, 9):
             for y in range(3,6):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 9:
         for x in range(6, 9):
             for y in range(6,9):
                 if a[x, y] != N:
-                    numpy.setdiff1d(numbers, a[x, y])
+                    numbers = numpy.setdiff1d(numbers, a[x, y])
     return numbers
 
 
