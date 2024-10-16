@@ -44,7 +44,8 @@ def show(a: array):
 def count_nulls_in_sector(a: array, sector: int, verbose: bool=False) -> int:
     """
 
-    :param a: A two dimensional array with the sudoku data
+    :param verbose: Print debug info
+    :param a: A two-dimensional array with the sudoku data
     :param sector: A number between 1 and 9
     :return: The number of zeros in the given sector
     """
@@ -104,6 +105,64 @@ def count_nulls_in_sector(a: array, sector: int, verbose: bool=False) -> int:
     # if verbose:
     #     print("Nulls in S" + str(sector) + " : " + str(count_nulls))
     return count_nulls
+
+
+def possible_numbers_in_sector(a: array, sector: int, verbose: bool=False) -> array:
+    """
+
+    :param a: A two-dimensional array with the sudoku data
+    :param sector: A number between 1 and 9
+    :return: An array with possible numbers that are not used in this sector yet.
+    """
+    numbers = array(range(1, 10))
+    if sector < 1 or sector > 9:
+        raise Exception("Sector must be between 1 and 9")
+    if sector == 1:
+        for x in range(0, 3):
+            for y in range(0,3):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 2:
+        for x in range(0, 3):
+            for y in range(3,6):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 3:
+        for x in range(0, 3):
+            for y in range(6,9):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 4:
+        for x in range(3, 6):
+            for y in range(0,3):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 5:
+        for x in range(3, 6):
+            for y in range(3,6):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 6:
+        for x in range(3, 6):
+            for y in range(6,9):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 7:
+        for x in range(6, 9):
+            for y in range(0,3):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 8:
+        for x in range(6, 9):
+            for y in range(3,6):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    if sector == 9:
+        for x in range(6, 9):
+            for y in range(6,9):
+                if a[x, y] != N:
+                    numpy.setdiff1d(numbers, a[x, y])
+    return numbers
 
 
 def serialize_array(a: array, filename: str = "sudoku.txt"):
@@ -201,6 +260,11 @@ def possible_numbers_in_rows(a:array):
         print("Possible numbers in R" + str(i+1) + " : " + str(possible_numbers_in_row(a, i)))
 
 
+def possible_numbers_in_sectors(a:array):
+    for i in range(1, 10):
+        print("Possible numbers in S" + str(i) + " : " + str(possible_numbers_in_sector(a, i)))
+
+
 def row_has_duplicates(a: array, row_nr: int) -> bool:
     numbers = array(range(1, 10))
     matched = False
@@ -274,6 +338,8 @@ def analyze_sudoku(a, verbose: bool=False):
     possible_numbers_in_columns(a)
     print("== Possible numbers in rows")
     possible_numbers_in_rows(a)
+    print("== Possible numbers in sectors")
+    possible_numbers_in_sectors(a)
 
 
 def main():
