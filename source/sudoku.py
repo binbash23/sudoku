@@ -122,7 +122,10 @@ def count_nulls_in_row(a: array, row_nr: int, verbose: bool = False) -> int:
             count_nulls += 1
     # print("Row    " + str(row_nr+1) + " has " + str(count_nulls) + " nulls.")
     if verbose:
-        print("Nulls in R" + str(row_nr + 1) + " : " + str(count_nulls))
+        if count_nulls == 0 or count_nulls == 1:
+            print("Nulls in R" + str(row_nr + 1) + " : " + str(count_nulls) + " *")
+        else:
+            print("Nulls in R" + str(row_nr + 1) + " : " + str(count_nulls))
     return count_nulls
 
 
@@ -133,7 +136,12 @@ def count_nulls_in_column(a: array, column_nr: int, verbose: bool = False) -> in
             count_nulls += 1
     # print("Column " + str(column_nr+1) + " has " + str(count_nulls) + " nulls.")
     if verbose:
-        print("Nulls in C" + str(column_nr + 1) + " : " + str(count_nulls))
+        if count_nulls == 0 or count_nulls == 1:
+            print("Nulls in C" + str(column_nr + 1) + " : " + str(count_nulls) + " *")
+        else:
+            print("Nulls in C" + str(column_nr + 1) + " : " + str(count_nulls))
+    # if verbose:
+    #     print("Nulls in C" + str(column_nr + 1) + " : " + str(count_nulls))
     return count_nulls
 
 
@@ -222,19 +230,19 @@ def count_nulls_in_sectors(a: array, verbose: bool = False) -> int:
     return count_nulls
 
 
-def show_sudoku_status(a):
+def show_sudoku_status(a, verbose: bool=False):
     print("== Analyzing sudoku")
     print("== Duplicate checking in rows    : " + str(rows_have_duplicates(a)))
     print("== Duplicate checking in columns : " + str(columns_have_duplicates(a)))
-    print("== Nulls in rows                 : " + str(count_nulls_in_rows(a, False)))
-    print("== Nulls in columns              : " + str(count_nulls_in_columns(a, False)))
-    print("== Nulls in sectors              : " + str(count_nulls_in_sectors(a, True)))
+    print("== Nulls in rows                 : " + str(count_nulls_in_rows(a, verbose)))
+    print("== Nulls in columns              : " + str(count_nulls_in_columns(a, verbose)))
+    print("== Nulls in sectors              : " + str(count_nulls_in_sectors(a, verbose)))
 
 
 def main():
     a = deserialize_array()
     show(a)
-    show_sudoku_status(a)
+    show_sudoku_status(a, True)
     #print(a)
     #empty(a)
     #randomize(a)
