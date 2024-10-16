@@ -173,6 +173,34 @@ def column_has_duplicates(a: array, column_nr: int) -> bool:
         return False
 
 
+def possible_numbers_in_column(a: array, column_nr: int) -> array:
+    numbers = array(range(1,10))
+    for j in range(0, 9):
+        if a[j, column_nr] != N:
+            numbers = numpy.setdiff1d(numbers, a[j, column_nr])
+            # print("->" + str(numbers_1_to_10))
+    return numbers
+
+
+def possible_numbers_in_row(a: array, row_nr: int) -> array:
+    numbers = array(range(1,10))
+    for j in range(0, 9):
+        if a[row_nr, j] != N:
+            numbers = numpy.setdiff1d(numbers, a[row_nr, j])
+            # print("->" + str(numbers_1_to_10))
+    return numbers
+
+
+def possible_numbers_in_columns(a:array):
+    for i in range(0, 9):
+        print("Possible numbers in C" + str(i+1) + " : " + str(possible_numbers_in_column(a, i)))
+
+
+def possible_numbers_in_rows(a:array):
+    for i in range(0, 9):
+        print("Possible numbers in R" + str(i+1) + " : " + str(possible_numbers_in_row(a, i)))
+
+
 def row_has_duplicates(a: array, row_nr: int) -> bool:
     numbers = array(range(1, 10))
     matched = False
@@ -235,19 +263,23 @@ def count_nulls_in_sectors(a: array, verbose: bool = False) -> int:
     return count_nulls
 
 
-def show_sudoku_status(a, verbose: bool=False):
+def analyze_sudoku(a, verbose: bool=False):
     print("== Analyzing sudoku")
     print("== Duplicate checking in rows    : " + str(rows_have_duplicates(a)))
     print("== Duplicate checking in columns : " + str(columns_have_duplicates(a)))
     print("== Nulls in rows                 : " + str(count_nulls_in_rows(a, verbose)))
     print("== Nulls in columns              : " + str(count_nulls_in_columns(a, verbose)))
     print("== Nulls in sectors              : " + str(count_nulls_in_sectors(a, verbose)))
+    print("== Possible numbers in columns")
+    possible_numbers_in_columns(a)
+    print("== Possible numbers in rows")
+    possible_numbers_in_rows(a)
 
 
 def main():
     a = deserialize_array()
     show(a)
-    show_sudoku_status(a, True)
+    analyze_sudoku(a, True)
     #print(a)
     #empty(a)
     #randomize(a)
