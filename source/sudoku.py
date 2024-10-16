@@ -98,9 +98,9 @@ def count_nulls_in_sector(a: array, sector: int, verbose: bool=False) -> int:
                     count_nulls += 1
     if verbose:
         if count_nulls == 0 or count_nulls == 1:
-            print("Nulls in S" + str(sector + 1) + " : " + str(count_nulls) + " *")
+            print("Nulls in S" + str(sector) + " : " + str(count_nulls) + " *")
         else:
-            print("Nulls in S" + str(sector + 1) + " : " + str(count_nulls))
+            print("Nulls in S" + str(sector) + " : " + str(count_nulls))
     # if verbose:
     #     print("Nulls in S" + str(sector) + " : " + str(count_nulls))
     return count_nulls
