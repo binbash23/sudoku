@@ -33,7 +33,7 @@ def show(a: array):
     print("     C1 C2 C3 C4 C5 C6 C7 C8 C9")
     print()
     for i in range(0, 9):
-        print(" R" + str(i + 1) + " ", end=" ")
+        print(" R" + str(i + 1) + "  ", end=" ")
         for j in range(0, 9):
             # print(str(a[i, j]) + " ", end=" ")
             print(str(trunc(a[i, j])) + " ", end=" ")
@@ -41,15 +41,81 @@ def show(a: array):
     print()
 
 
-def serialize_array(a: array, filename:  str="sudoku.txt"):
+def count_nulls_in_sector(a: array, sector: int, verbose: bool=False) -> int:
+    """
+
+    :param a: A two dimensional array with the sudoku data
+    :param sector: A number between 1 and 9
+    :return: The number of zeros in the given sector
+    """
+    count_nulls = 0
+    if sector < 1 or sector > 9:
+        raise Exception("Sector must be between 1 and 9")
+    if sector == 1:
+        for x in range(0, 3):
+            for y in range(0,3):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 2:
+        for x in range(0, 3):
+            for y in range(3,6):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 3:
+        for x in range(0, 3):
+            for y in range(6,9):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 4:
+        for x in range(3, 6):
+            for y in range(0,3):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 5:
+        for x in range(3, 6):
+            for y in range(3,6):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 6:
+        for x in range(3, 6):
+            for y in range(6,9):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 7:
+        for x in range(6, 9):
+            for y in range(0,3):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 8:
+        for x in range(6, 9):
+            for y in range(3,6):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if sector == 9:
+        for x in range(6, 9):
+            for y in range(6,9):
+                if a[x, y] == N:
+                    count_nulls += 1
+    if verbose:
+        print("Nulls in S" + str(sector) + " : " + str(count_nulls))
+    return count_nulls
+
+
+def serialize_array(a: array, filename: str = "sudoku.txt"):
+    """
+
+    :param a: A two dimensional array with the sudoku data
+    :param filename: The name of the file to write the data into
+    :return:
+    """
     numpy.savetxt(filename, a, delimiter=',', header='Sudoku', fmt='%d')
 
 
-def deserialize_array(filename: str="sudoku.txt") -> array:
+def deserialize_array(filename: str = "sudoku.txt") -> array:
     return numpy.loadtxt(filename, delimiter=",", skiprows=1)
 
 
-def count_nulls_in_row(a: array, row_nr: int, verbose: bool=False) -> int:
+def count_nulls_in_row(a: array, row_nr: int, verbose: bool = False) -> int:
     count_nulls = 0
     for j in range(0, 9):
         if a[row_nr, j] == N:
@@ -60,7 +126,7 @@ def count_nulls_in_row(a: array, row_nr: int, verbose: bool=False) -> int:
     return count_nulls
 
 
-def count_nulls_in_column(a: array, column_nr: int, verbose: bool=False) -> int:
+def count_nulls_in_column(a: array, column_nr: int, verbose: bool = False) -> int:
     count_nulls = 0
     for j in range(0, 9):
         if a[j, column_nr] == N:
@@ -117,35 +183,42 @@ def row_has_duplicates(a: array, row_nr: int) -> bool:
         return False
 
 
-def rows_have_duplicates(a: array, verbose: bool=False) -> bool:
+def rows_have_duplicates(a: array, verbose: bool = False) -> bool:
     for i in range(0, 9):
         if verbose:
-            print("Duplicates in R" + str(i+1) + ": " + str(row_has_duplicates(a, i)))
+            print("Duplicates in R" + str(i + 1) + ": " + str(row_has_duplicates(a, i)))
         if row_has_duplicates(a, i):
             return True
     return False
 
 
-def columns_have_duplicates(a: array, verbose: bool=False) -> bool:
+def columns_have_duplicates(a: array, verbose: bool = False) -> bool:
     for i in range(0, 9):
         if verbose:
-            print("Duplicates in R" + str(i+1) + ": " + str(column_has_duplicates(a, i)))
+            print("Duplicates in R" + str(i + 1) + ": " + str(column_has_duplicates(a, i)))
         if column_has_duplicates(a, i):
             return True
     return False
 
 
-def count_nulls_in_rows(a: array, verbose: bool=False) -> int:
-    count_nulls=0
+def count_nulls_in_rows(a: array, verbose: bool = False) -> int:
+    count_nulls = 0
     for i in range(0, 9):
-        count_nulls+=count_nulls_in_row(a, i, verbose)
+        count_nulls += count_nulls_in_row(a, i, verbose)
     return count_nulls
 
 
-def count_nulls_in_columns(a: array, verbose: bool=False) -> int:
-    count_nulls=0
+def count_nulls_in_columns(a: array, verbose: bool = False) -> int:
+    count_nulls = 0
     for i in range(0, 9):
-        count_nulls+=count_nulls_in_column(a, i, verbose)
+        count_nulls += count_nulls_in_column(a, i, verbose)
+    return count_nulls
+
+
+def count_nulls_in_sectors(a: array, verbose: bool = False) -> int:
+    count_nulls = 0
+    for i in range(1, 10):
+        count_nulls += count_nulls_in_sector(a, i, verbose)
     return count_nulls
 
 
@@ -153,8 +226,9 @@ def show_sudoku_status(a):
     print("== Analyzing sudoku")
     print("== Duplicate checking in rows    : " + str(rows_have_duplicates(a)))
     print("== Duplicate checking in columns : " + str(columns_have_duplicates(a)))
-    print("== Nulls in rows                 : " + str(count_nulls_in_rows(a, True)))
-    print("== Nulls in columns              : " + str(count_nulls_in_columns(a, True)))
+    print("== Nulls in rows                 : " + str(count_nulls_in_rows(a, False)))
+    print("== Nulls in columns              : " + str(count_nulls_in_columns(a, False)))
+    print("== Nulls in sectors              : " + str(count_nulls_in_sectors(a, True)))
 
 
 def main():
