@@ -345,7 +345,7 @@ def analyze_sudoku(a, verbose: bool=False):
 def main():
     a = deserialize_array()
     show(a)
-    analyze_sudoku(a, True)
+    analyze_sudoku(a, False)
     #print(a)
     #empty(a)
     #randomize(a)
