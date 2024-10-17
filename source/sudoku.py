@@ -18,7 +18,7 @@ zero = 0
 
 # Functions section
 
-def empty(a: array):
+def fill_with_zeros(a: array):
     """
     Fill the given sudoku matrix with zeros.
     :param a: A two-dimensional array with the sudoku data
@@ -29,7 +29,12 @@ def empty(a: array):
             a[i, j] = zero
 
 
-def randomize(a: array):
+def fill_with_random_numbers(a: array):
+    """
+    Fill the given sudoku matrix with random numbers.
+    :param a: A two-dimensional array with the sudoku data
+    :return:
+    """
     for i in range(0, 9):
         for j in range(0, 9):
             a[i, j] = random.randint(1, 9)
@@ -53,7 +58,7 @@ def show(a: array):
     print()
 
 
-def count_nulls_in_sector(a: array, sector: int, verbose: bool=False) -> int:
+def count_zeros_in_sector(a: array, sector: int, verbose: bool=False) -> int:
     """
     Count the unknown numbers in the given sudoku matrix sector. The sector has to be
     between 1 and 9.
@@ -120,13 +125,13 @@ def count_nulls_in_sector(a: array, sector: int, verbose: bool=False) -> int:
     return count_nulls
 
 
-def possible_numbers_in_sector(a: array, sector: int) -> array:
+def predictable_numbers_in_sector(a: array, sector: int) -> array:
     """
-    Search a list of all possible numbers that may fit into the given sector of the
+    Search a list of all predictable numbers that may fit into the given sector of the
     sudoku matrix.
     :param a: A two-dimensional array with the sudoku data
     :param sector: A number between 1 and 9
-    :return: An array with possible numbers that are not used in this sector yet.
+    :return: An array with predictable numbers that are not used in this sector yet.
     """
     numbers = array(range(1, 10))
     if sector < 1 or sector > 9:
@@ -200,7 +205,7 @@ def deserialize_array(filename: str = "sudoku.txt") -> array:
     return numpy.loadtxt(filename, delimiter=",", skiprows=1)
 
 
-def count_nulls_in_row(a: array, row_index: int, verbose: bool = False) -> int:
+def count_zeros_in_row(a: array, row_index: int, verbose: bool = False) -> int:
     """
     Count the unknown numbers in a given row. The row count start at 0.
     :param a: A two-dimensional array with the sudoku data
@@ -225,7 +230,7 @@ def count_nulls_in_row(a: array, row_index: int, verbose: bool = False) -> int:
     return count_nulls
 
 
-def count_nulls_in_column(a: array, column_index: int, verbose: bool = False) -> int:
+def count_zeros_in_column(a: array, column_index: int, verbose: bool = False) -> int:
     """
     Count the unknown numbers in a given column. The column count start at 0.
     :param a: A two-dimensional array with the sudoku data
@@ -277,12 +282,12 @@ def column_has_duplicates(a: array, column_index: int) -> bool:
         return False
 
 
-def possible_numbers_in_column(a: array, column_index: int) -> array:
+def predictable_numbers_in_column(a: array, column_index: int) -> array:
     """
-    Search possible numbers in a given column.
+    Search predictable numbers in a given column.
     :param a: A two-dimensional array with the sudoku data
     :param column_index: The column index starting at 0
-    :return: A list possible numbers in the given column
+    :return: A list predictable numbers in the given column
     """
     numbers = array(range(1,10))
     for j in range(0, 9):
@@ -292,12 +297,12 @@ def possible_numbers_in_column(a: array, column_index: int) -> array:
     return numbers
 
 
-def possible_numbers_in_row(a: array, row_index: int) -> array:
+def predictable_numbers_in_row(a: array, row_index: int) -> array:
     """
-    Search possible numbers in a given row.
+    Search predictable numbers in a given row.
     :param a: A two-dimensional array with the sudoku data
     :param row_index: The row index starting at 0
-    :return: A list possible numbers in the given row
+    :return: A list predictable numbers in the given row
     """
     numbers = array(range(1,10))
     for j in range(0, 9):
@@ -307,54 +312,54 @@ def possible_numbers_in_row(a: array, row_index: int) -> array:
     return numbers
 
 
-def possible_numbers_in_columns(a:array, verbose:bool=False):
+def predictable_numbers_in_columns(a:array, verbose:bool=False):
     """
-    Print the possible numbers to be filled in of all columns.
+    Print the predictable numbers to be filled in of all columns.
     :param verbose: Show debug info
     :param a: A two-dimensional array with the sudoku data
     :return:
     """
     unsolved_columns = 0
     for i in range(0, 9):
-        current_numbers = possible_numbers_in_column(a, i)
+        current_numbers = predictable_numbers_in_column(a, i)
         if len(current_numbers) > 1:
             unsolved_columns+=1
         if verbose:
-            print("Possible numbers in C" + str(i+1) + " : " + str(current_numbers))
+            print("Predictable numbers in C" + str(i+1) + " : " + str(current_numbers))
     print("Unsolved columns                 : " + str(unsolved_columns))
 
 
-def possible_numbers_in_rows(a:array, verbose:bool=False):
+def predictable_numbers_in_rows(a:array, verbose:bool=False):
     """
-    Print the possible numbers to be filled in of all rows.
+    Print the predictable numbers to be filled in of all rows.
     :param verbose: Show debug info
     :param a: A two-dimensional array with the sudoku data
     :return:
     """
     unsolved_rows = 0
     for i in range(0, 9):
-        current_numbers = possible_numbers_in_row(a, i)
+        current_numbers = predictable_numbers_in_row(a, i)
         if len(current_numbers) > 1:
             unsolved_rows += 1
         if verbose:
-            print("Possible numbers in R" + str(i+1) + " : " + str(current_numbers))
+            print("Predictable numbers in R" + str(i+1) + " : " + str(current_numbers))
     print("Unsolved rows                    : " + str(unsolved_rows))
 
 
-def possible_numbers_in_sectors(a:array, verbose:bool=False):
+def predictable_numbers_in_sectors(a:array, verbose:bool=False):
     """
-    Print the possible numbers to be filled in of all sectors.
+    Print the predictable numbers to be filled in of all sectors.
     :param verbose: Show debug info
     :param a: A two-dimensional array with the sudoku data
     :return:
     """
     unsolved_sectors = 0
     for i in range(1, 10):
-        current_numbers = possible_numbers_in_sector(a, i)
+        current_numbers = predictable_numbers_in_sector(a, i)
         if len(current_numbers) > 1:
             unsolved_sectors += 1
         if verbose:
-            print("Possible numbers in S" + str(i) + " : " + str(current_numbers))
+            print("Predictable numbers in S" + str(i) + " : " + str(current_numbers))
     print("Unsolved sectors                 : " + str(unsolved_sectors))
 
 
@@ -405,24 +410,42 @@ def columns_have_duplicates(a: array, verbose: bool = False) -> bool:
     return False
 
 
-def count_nulls_in_rows(a: array, verbose: bool = False) -> int:
+def count_zeros_in_rows(a: array, verbose: bool = False) -> int:
     count_nulls = 0
     for i in range(0, 9):
-        count_nulls += count_nulls_in_row(a, i, verbose)
+        count_nulls += count_zeros_in_row(a, i, verbose)
     return count_nulls
 
 
-def count_nulls_in_columns(a: array, verbose: bool = False) -> int:
+def count_zeros_in_columns(a: array, verbose: bool = False) -> int:
     count_nulls = 0
     for i in range(0, 9):
-        count_nulls += count_nulls_in_column(a, i, verbose)
+        count_nulls += count_zeros_in_column(a, i, verbose)
     return count_nulls
 
 
-def count_nulls_in_sectors(a: array, verbose: bool = False) -> int:
+def count_zeros(a:array) -> int:
+    """
+    Count all zero numbers in the given matrix.
+    :param a: A two-dimensional array with the sudoku data
+    :return: The number of zeros in the matrix
+    """
+    return count_zeros_in_columns(a, False)
+
+
+def count_non_zeros(a:array) -> int:
+    """
+    Count all non-zero numbers in the given matrix.
+    :param a: A two-dimensional array with the sudoku data
+    :return: The number of non-zeros in the matrix
+    """
+    return 81 - count_zeros_in_columns(a, False)
+
+
+def count_zeros_in_sectors(a: array, verbose: bool = False) -> int:
     count_nulls = 0
     for i in range(1, 10):
-        count_nulls += count_nulls_in_sector(a, i, verbose)
+        count_nulls += count_zeros_in_sector(a, i, verbose)
     return count_nulls
 
 
@@ -452,14 +475,14 @@ def get_sector_id(row_index: int, column_index: int) -> int:
     if row_index < 9 and column_index < 9:
         return 9
 
-def possible_numbers_in_position(a: array, row_index: int, column_index: int, verbose: bool=False) -> array:
+def predictable_numbers_in_position(a: array, row_index: int, column_index: int, verbose: bool=False) -> array:
     """
-    Search a list of possible numbers that can fit in the position of the sudoku matrix
+    Search a list of predictable numbers that can fit in the position of the sudoku matrix
     :param verbose: Show debug info
     :param a: A two-dimensional array with the sudoku data
     :param column_index: The column number to analyze
     :param row_index: The row number to analyze
-    :return: All possible numbers that may fit on this position in an array
+    :return: All predictable numbers that may fit on this position in an array
     """
     if a[row_index, column_index] != zero:
         if verbose:
@@ -469,33 +492,36 @@ def possible_numbers_in_position(a: array, row_index: int, column_index: int, ve
             print("row_index : " + str(row_index))
             print("column_index : " + str(column_index))
         return array([trunc(a[row_index, column_index])])
-    numbers = numpy.intersect1d(possible_numbers_in_column(a, column_index), possible_numbers_in_row(a, row_index))
+    numbers = numpy.intersect1d(predictable_numbers_in_column(a, column_index), predictable_numbers_in_row(a, row_index))
     if verbose:
-        print("Possible values in C" + str(column_index) + " : " + str(possible_numbers_in_column(a, column_index)))
-        print("Possible values in R" + str(row_index) + " : " + str(possible_numbers_in_row(a, row_index)))
-        print("Intersect between possible values from C" + str(column_index) + " and R" + str(row_index) + " : " + str(numbers))
-    numbers = numpy.intersect1d(numbers, possible_numbers_in_sector(a, get_sector_id(row_index, column_index)))
+        print("Predictable values in C" + str(column_index) + " : " + str(predictable_numbers_in_column(a, column_index)))
+        print("Predictable values in R" + str(row_index) + " : " + str(predictable_numbers_in_row(a, row_index)))
+        print("Intersect between predictable values from C" + str(column_index) + " and R" + str(row_index) + " : " + str(numbers))
+    numbers = numpy.intersect1d(numbers, predictable_numbers_in_sector(a, get_sector_id(row_index, column_index)))
     if verbose:
-        print("Possible numbers in S" + str(get_sector_id(row_index, column_index)) + " : " + str(possible_numbers_in_sector(a, get_sector_id(row_index, column_index))))
+        print("pPedictable numbers in S" + str(get_sector_id(row_index, column_index)) + " : " + str(predictable_numbers_in_sector(a, get_sector_id(row_index, column_index))))
     return numbers
 
 
-def possible_numbers_in_positions(a: array, verbose: bool=False):
+def save_predictable_numbers_in_positions(a: array, verbose: bool=False) -> int:
     """
-    Search possible numbers that can fit in the every position of the sudoku
+    Search save predictable numbers that can fit in a position with a zero of the sudoku
     :param verbose: Show debug info
     :param a: A two-dimensional array with the sudoku data
     :return:
     """
-    unknown_positions = 0
+    save_predictable_positions = 0
     for row_index in range(0, 9):
         for column_index in range(0, 9):
-            current_possible_numbers = possible_numbers_in_position(a, row_index, column_index)
-            if len(current_possible_numbers) > 1:
-                unknown_positions+=1
+            if a[row_index, column_index] != 0:
+                continue
+            current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
+            if len(current_predictable_numbers) == 1:
+                save_predictable_positions+=1
             if verbose:
-                print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(current_possible_numbers))
-    print("Unknown positions                : " + str(unknown_positions))
+                print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(current_predictable_numbers))
+    # print("Unknown positions                : " + str(unknown_positions))
+    return save_predictable_positions
 
 
 def analyze_sudoku(a, verbose: bool=False):
@@ -506,32 +532,19 @@ def analyze_sudoku(a, verbose: bool=False):
     :return:
     """
     print("== Analyzing sudoku")
-    print("== Duplicate checking in rows")
+    #print("== Duplicate checking in rows")
     print("Found duplicates in rows         : " + str(rows_have_duplicates(a)))
-    print("== Duplicate checking in columns")
+    #print("== Duplicate checking in columns")
     print("Found duplicates in columns      : " + str(columns_have_duplicates(a)))
-    print("== Nulls in rows")
-    print("Unknown numbers in rows          : " + str(count_nulls_in_rows(a, verbose)))
-    print("== Nulls in columns")
-    print("Unknown numbers in columns       : " + str(count_nulls_in_columns(a, verbose)))
-    print("== Nulls in sectors")
-    print("Unknown numbers in sectors       : " + str(count_nulls_in_sectors(a, verbose)))
-    print("== Possible numbers in columns")
-    possible_numbers_in_columns(a, verbose)
-    print("== Possible numbers in rows")
-    possible_numbers_in_rows(a, verbose)
-    print("== Possible numbers in sectors")
-    possible_numbers_in_sectors(a, verbose)
-    print("== Possible numbers in positions")
-    possible_numbers_in_positions(a, verbose)
-
-    # print("== debug")
-    # # print("Sector nr from C3, R2: " + str(get_sector_id(1, 2)))
-    # print("Sector nr from C4, R3: " + str(get_sector_id(2, 3)))
-    #
-    # # print("C0, R0 : " + str(possible_number_in_position(a, 0, 0, True)))
-    # # print("C1, R2 : " + str(possible_number_in_position(a, 0, 1, True)))
-    # print("possible_number_in_position C4, R3 : " + str(possible_number_in_position(a, 2, 3, True)))
+    #print("== Non-zero numbers in matrix")
+    print("Non-zero numbers                 : " + str(count_non_zeros(a)))
+    #print("== Save predictable numbers in positions")
+    print("Save predicable positions        : "
+          + str(save_predictable_numbers_in_positions(a, verbose)))
+    #print("== Checking if sudoku is complete")
+    print("Sudoku is comple                 : " + str(is_complete(a)))
+    #print("== Checking if sudoku is deadlocked")
+    print("Sudoku is deadlocked             : " + str(is_deadlocked(a)))
 
 
 def fill_predictable_zeros(a:array, verbose:bool=False) -> array:
@@ -542,15 +555,13 @@ def fill_predictable_zeros(a:array, verbose:bool=False) -> array:
     :return:
     """
     filled_array = numpy.copy(a)
-    # print("---")
-    # show(filled_array)
     for column_index in range(0,9):
         for row_index in range(0, 9):
             if filled_array[row_index, column_index] != zero:
                 if verbose:
                     print("filled_array[row_index, column_index] != zero : " + str(filled_array[row_index, column_index]))
                 continue
-            current_predictable_numbers = possible_numbers_in_position(a, row_index, column_index)
+            current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
             if len(current_predictable_numbers) == 1:
                 filled_array[row_index, column_index] = current_predictable_numbers[0]
             else:
@@ -560,6 +571,40 @@ def fill_predictable_zeros(a:array, verbose:bool=False) -> array:
     return filled_array
 
 
+def is_complete(a:array, verbose:bool=False) -> bool:
+    """
+    Checks if there are unknown numbers in a sudoku matrix and returns False if there
+    are any zeros in the matrix. Returns True if there are only non-zero numbers.
+    :param a: A two-dimensional array with the sudoku data
+    :return: True if the matrix has only non-zero numbers
+    """
+    for column_index in range(0,9):
+        for row_index in range(0, 9):
+            if a[row_index, column_index] == zero:
+                if verbose:
+                    print("First zero number found at R" + str(row_index+1) + ", C" + str(column_index+1))
+                return False
+    return True
+
+
+def is_deadlocked(a:array, verbose:bool=False) -> bool:
+    """
+    Checks if the matrix is in a deadlock state. This is when a position exists that has a number
+    which is already used in a dependent row, column or sector.
+    :param verbose: Show debug info
+    :param a: A two-dimensional array with the sudoku data
+    :return: True if the matrix is deadlocked
+    """
+    for column_index in range(0,9):
+        for row_index in range(0, 9):
+            current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
+            if len(current_predictable_numbers) == 0:
+                if verbose:
+                    print("Found deadlock in R" + str(row_index+1) + ", C" + str(column_index+1))
+                return True
+    return False
+
+
 def main():
     a = deserialize_array()
     show(a)
@@ -567,11 +612,6 @@ def main():
     first_predicted_array = fill_predictable_zeros(a, False)
     show(first_predicted_array)
     analyze_sudoku(first_predicted_array, False)
-    #print(a)
-    #empty(a)
-    #randomize(a)
-    #show(a)
-    #serialize_array(a)
 
 
 if __name__ == '__main__':
