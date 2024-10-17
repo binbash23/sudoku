@@ -632,7 +632,9 @@ def main():
 
     next_array = numpy.copy(a)
     iterations = 0
-    while not is_complete(next_array) and not is_deadlocked(next_array):
+    while (not is_complete(next_array)
+           and not is_deadlocked(next_array)
+           and save_predictable_numbers_in_positions(next_array)>0):
         next_array = fill_save_predictable_zeros(next_array, _verbose)
         iterations+=1
         print()
@@ -647,6 +649,8 @@ def main():
         is_deadlocked(next_array, True)
     if is_complete(next_array):
         print("Bingo! Sudoku is complete.")
+    if save_predictable_numbers_in_positions(a) == 0:
+        print("No save predictable numbers found.")
 
 
 if __name__ == '__main__':
