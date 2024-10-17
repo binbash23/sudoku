@@ -547,7 +547,7 @@ def analyze_sudoku(a, verbose: bool=False):
     print("Sudoku is deadlocked             : " + str(is_deadlocked(a)))
 
 
-def fill_predictable_zeros(a:array, verbose:bool=False) -> array:
+def fill_save_predictable_zeros(a:array, verbose:bool=False) -> array:
     """
     Calculate all predictable numbers for zeros in a given sudoku array and return the new array
     :param a: A two-dimensional array with the sudoku data
@@ -609,9 +609,24 @@ def main():
     a = deserialize_array()
     show(a)
     analyze_sudoku(a, False)
-    first_predicted_array = fill_predictable_zeros(a, False)
-    show(first_predicted_array)
-    analyze_sudoku(first_predicted_array, False)
+
+    next_array = numpy.copy(a)
+    iterations = 0
+    while not is_complete(next_array) and not is_deadlocked(next_array):
+        next_array = fill_save_predictable_zeros(next_array, False)
+        iterations+=1
+        print()
+        print("== Iteration no " + str(iterations) + ":")
+        show(next_array)
+        analyze_sudoku(next_array)
+    print()
+    print("Operation stopped.")
+    print("Iterations done : " + str(iterations))
+    if is_deadlocked(next_array):
+        print("Sudoku is deadlocked:")
+        is_deadlocked(next_array, True)
+    if is_complete(next_array):
+        print("Bingo! Sudoku is complete.")
 
 
 if __name__ == '__main__':
