@@ -321,7 +321,7 @@ def possible_numbers_in_columns(a:array, verbose:bool=False):
             unsolved_columns+=1
         if verbose:
             print("Possible numbers in C" + str(i+1) + " : " + str(current_numbers))
-    print("Unsolved columns : " + str(unsolved_columns))
+    print("Unsolved columns                 : " + str(unsolved_columns))
 
 
 def possible_numbers_in_rows(a:array, verbose:bool=False):
@@ -338,7 +338,7 @@ def possible_numbers_in_rows(a:array, verbose:bool=False):
             unsolved_rows += 1
         if verbose:
             print("Possible numbers in R" + str(i+1) + " : " + str(current_numbers))
-    print("Unsolved rows : " + str(unsolved_rows))
+    print("Unsolved rows                    : " + str(unsolved_rows))
 
 
 def possible_numbers_in_sectors(a:array, verbose:bool=False):
@@ -355,7 +355,7 @@ def possible_numbers_in_sectors(a:array, verbose:bool=False):
             unsolved_sectors += 1
         if verbose:
             print("Possible numbers in S" + str(i) + " : " + str(current_numbers))
-    print("Unsolved sectors : " + str(unsolved_sectors))
+    print("Unsolved sectors                 : " + str(unsolved_sectors))
 
 
 def row_has_duplicates(a: array, row_index: int) -> bool:
@@ -495,7 +495,7 @@ def possible_numbers_in_positions(a: array, verbose: bool=False):
                 unknown_positions+=1
             if verbose:
                 print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(current_possible_numbers))
-    print("Unknown positions : " + str(unknown_positions))
+    print("Unknown positions                : " + str(unknown_positions))
 
 
 def analyze_sudoku(a, verbose: bool=False):
@@ -506,13 +506,16 @@ def analyze_sudoku(a, verbose: bool=False):
     :return:
     """
     print("== Analyzing sudoku")
-    print("== Duplicate checking in rows    : " + str(rows_have_duplicates(a)))
-    print("== Duplicate checking in columns : " + str(columns_have_duplicates(a)))
+    print("== Duplicate checking in rows")
+    print("Found duplicates in rows         : " + str(rows_have_duplicates(a)))
+    print("== Duplicate checking in columns")
+    print("Found duplicates in columns      : " + str(columns_have_duplicates(a)))
     print("== Nulls in rows")
     print("Unknown numbers in rows          : " + str(count_nulls_in_rows(a, verbose)))
     print("== Nulls in columns")
     print("Unknown numbers in columns       : " + str(count_nulls_in_columns(a, verbose)))
-    print("== Nulls in sectors              : " + str(count_nulls_in_sectors(a, verbose)))
+    print("== Nulls in sectors")
+    print("Unknown numbers in sectors       : " + str(count_nulls_in_sectors(a, verbose)))
     print("== Possible numbers in columns")
     possible_numbers_in_columns(a, verbose)
     print("== Possible numbers in rows")
