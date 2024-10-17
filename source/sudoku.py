@@ -534,10 +534,39 @@ def analyze_sudoku(a, verbose: bool=False):
     # print("possible_number_in_position C4, R3 : " + str(possible_number_in_position(a, 2, 3, True)))
 
 
+def fill_predictable_zeros(a:array, verbose:bool=False) -> array:
+    """
+    Calculate all predictable numbers for zeros in a given sudoku array and return the new array
+    :param a: A two-dimensional array with the sudoku data
+    :param verbose: Show debug info
+    :return:
+    """
+    filled_array = numpy.copy(a)
+    # print("---")
+    # show(filled_array)
+    for column_index in range(0,9):
+        for row_index in range(0, 9):
+            if filled_array[row_index, column_index] != zero:
+                if verbose:
+                    print("filled_array[row_index, column_index] != zero : " + str(filled_array[row_index, column_index]))
+                continue
+            current_predictable_numbers = possible_numbers_in_position(a, row_index, column_index)
+            if len(current_predictable_numbers) == 1:
+                filled_array[row_index, column_index] = current_predictable_numbers[0]
+            else:
+                filled_array[row_index, column_index] = 0
+            if verbose:
+                print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(filled_array[row_index, column_index]))
+    return filled_array
+
+
 def main():
     a = deserialize_array()
     show(a)
     analyze_sudoku(a, False)
+    first_predicted_array = fill_predictable_zeros(a, False)
+    show(first_predicted_array)
+    analyze_sudoku(first_predicted_array, False)
     #print(a)
     #empty(a)
     #randomize(a)
