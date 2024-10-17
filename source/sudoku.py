@@ -7,13 +7,15 @@ sudoku.py
 """
 
 import random
-
-from numpy import array
-import numpy
 from math import trunc
+from optparse import OptionParser
+
+import numpy
+from numpy import array
 
 # Variables section
 zero = 0
+# filename = "sudoku.txt"
 
 
 # Functions section
@@ -606,19 +608,37 @@ def is_deadlocked(a:array, verbose:bool=False) -> bool:
 
 
 def main():
-    a = deserialize_array()
+
+    parser = OptionParser()
+    parser.add_option("-f", "--file", dest="filename",
+                      help="read sudoku from FILE", metavar="FILE")
+    parser.add_option("-v", "--verbose",
+                      action="store_true", dest="verbose", default=False,
+                      help="be verbose")
+
+    (options, args) = parser.parse_args()
+
+    _filename = "sudoku.txt"
+    if options.filename:
+        _filename = options.filename
+    a = deserialize_array(_filename)
+
+    _verbose = False
+    if options.verbose:
+        _verbose = options.verbose
+
     show(a)
-    analyze_sudoku(a, False)
+    analyze_sudoku(a, _verbose)
 
     next_array = numpy.copy(a)
     iterations = 0
     while not is_complete(next_array) and not is_deadlocked(next_array):
-        next_array = fill_save_predictable_zeros(next_array, False)
+        next_array = fill_save_predictable_zeros(next_array, _verbose)
         iterations+=1
         print()
         print("== Iteration no " + str(iterations) + ":")
         show(next_array)
-        analyze_sudoku(next_array)
+        analyze_sudoku(next_array, _verbose)
     print()
     print("Operation stopped.")
     print("Iterations done : " + str(iterations))
