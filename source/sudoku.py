@@ -7,14 +7,18 @@ sudoku.py
 """
 
 import random
+import sys
 from math import trunc
 from optparse import OptionParser
 
 import numpy
 from numpy import array
+from branch_point import BranchPoint
+from branch_point_tree import BranchPointTree
 
 # Variables section
 zero = 0
+# _branch_point_tree: BranchPointTree = None
 # filename = "sudoku.txt"
 
 
@@ -630,27 +634,38 @@ def main():
     show(a)
     analyze_sudoku(a, _verbose)
 
-    next_array = numpy.copy(a)
+    # Initialize the branch point tree with the root array
+    branch_point_tree = BranchPointTree(a)
+    branch_point_tree.print()
+
+    sys.exit()
+
+    current_branch_point = branch_point_tree.get_root()
+    current_array = numpy.copy(a)
     iterations = 0
-    while (not is_complete(next_array)
-           and not is_deadlocked(next_array)
-           and save_predictable_numbers_in_positions(next_array)>0):
-        next_array = fill_save_predictable_zeros(next_array, _verbose)
+    while (not is_complete(current_array)
+           and not is_deadlocked(current_array)
+           and save_predictable_numbers_in_positions(current_array)>0):
+        current_array = fill_save_predictable_zeros(current_array, _verbose)
         iterations+=1
         print()
         print("== Iteration no " + str(iterations) + ":")
-        show(next_array)
-        analyze_sudoku(next_array, _verbose)
+        show(current_array)
+        analyze_sudoku(current_array, _verbose)
     print()
     print("Operation stopped.")
     print("Iterations done : " + str(iterations))
-    if is_deadlocked(next_array):
+    if is_deadlocked(current_array):
         print("Sudoku is deadlocked:")
-        is_deadlocked(next_array, True)
-    if is_complete(next_array):
+        is_deadlocked(current_array, True)
+    if is_complete(current_array):
         print("Bingo! Sudoku is complete.")
-    if save_predictable_numbers_in_positions(a) == 0:
+    if save_predictable_numbers_in_positions(current_array) == 0:
         print("No save predictable numbers found.")
+        branch_point_tree.add_branch_point(BranchPoint(current_array, parent_id=current_branch_point.get_id()))
+        branch_point_tree.print()
+
+
 
 
 if __name__ == '__main__':
