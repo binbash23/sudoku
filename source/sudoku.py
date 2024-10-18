@@ -530,6 +530,47 @@ def save_predictable_numbers_in_positions(a: array, verbose: bool=False) -> int:
     return save_predictable_positions
 
 
+def predictable_numbers_in_positions(a: array, verbose: bool=False):
+    """
+    Loop through all positions and print possible numbers which may fit.
+    :param verbose: Show debug info
+    :param a: A two-dimensional array with the sudoku data
+    :return:
+    """
+    for row_index in range(0, 9):
+        for column_index in range(0, 9):
+            if a[row_index, column_index] != 0:
+                if verbose:
+                    print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : "
+                          + str(trunc(a[row_index, column_index])) + " *FIX*")
+                continue
+            current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
+            print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(current_predictable_numbers))
+
+
+def get_best_position_indices_for_branching(a: array) -> []:
+    """
+    Search through all positions and return the row_index and column_index of the first position
+    with the lowest count of possible numbers.
+    :param a: A two-dimensional array with the sudoku data
+    :return: A list with the row_index and the column_index
+    """
+    best_position = []
+    current_possibilities = 10
+    for row_index in range(0, 9):
+        for column_index in range(0, 9):
+            if a[row_index, column_index] != 0:
+                continue
+            current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
+            if len(current_predictable_numbers) < current_possibilities:
+                current_possibilities = len(current_predictable_numbers)
+                best_position = [row_index, column_index]
+                # When can quit here if we already found a position with the lowest possibilities (=2)
+                if current_possibilities == 2:
+                    return best_position
+    return best_position
+
+
 def analyze_sudoku(a, verbose: bool=False):
     """
     Prints out some structure analysis of the sudoku matrix in arg a
@@ -638,8 +679,7 @@ def main():
     branch_point_tree = BranchPointTree(a)
     branch_point_tree.print()
 
-    sys.exit()
-
+    # Main Loop to dive into the branch to the solution #
     current_branch_point = branch_point_tree.get_root()
     current_array = numpy.copy(a)
     iterations = 0
@@ -652,7 +692,31 @@ def main():
         print("== Iteration no " + str(iterations) + ":")
         show(current_array)
         analyze_sudoku(current_array, _verbose)
+
+        if save_predictable_numbers_in_positions(current_array) == 0:
+            print("== No position with save predictable numbers available.")
+            current_best_position_indices_for_branching = get_best_position_indices_for_branching(current_array)
+            current_best_position_possibilities = predictable_numbers_in_position(current_array,
+                                                                                  current_best_position_indices_for_branching[0],
+                                                                                  current_best_position_indices_for_branching[1])
+            print("== Best first position indices for branching are "
+                  + str(current_best_position_indices_for_branching))
+            # predictable_numbers_in_positions(current_array)
+            if len(current_best_position_indices_for_branching) == 0:
+                print("== NO BRANCH POSITION FOUND")
+                break
+            print("== Creating new branch point")
+            branch_point_tree.add_branch_point(BranchPoint(current_array,
+                                                           parent_id=current_branch_point.get_id(),
+                                                           branch_position_row_index=current_best_position_indices_for_branching[0],
+                                                           branch_position_column_index=current_best_position_indices_for_branching[1],
+                                                           initial_possibilities=current_best_position_possibilities))
+            print("##########")
+            branch_point_tree.print()
+            sys.exit()
+
     print()
+
     print("Operation stopped.")
     print("Iterations done : " + str(iterations))
     if is_deadlocked(current_array):
@@ -662,8 +726,8 @@ def main():
         print("Bingo! Sudoku is complete.")
     if save_predictable_numbers_in_positions(current_array) == 0:
         print("No save predictable numbers found.")
-        branch_point_tree.add_branch_point(BranchPoint(current_array, parent_id=current_branch_point.get_id()))
-        branch_point_tree.print()
+        # branch_point_tree.add_branch_point(BranchPoint(current_array, parent_id=current_branch_point.get_id()))
+        # branch_point_tree.print()
 
 
 
