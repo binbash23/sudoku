@@ -26,14 +26,14 @@ class BranchPoint:
 
     def __init__(self, a: array, branch_position_row_index: int = -1, branch_position_column_index = -1,
                  is_root: bool = False, initial_possibilities:array=array([]),
-                 possibilities_left:array=array([]),
+                 # possibilities_left:array=array([]),
                  parent_id: uuid4=None):
         self._a = numpy.copy(a)
         self._is_root = is_root
         self._branch_position_row_index = branch_position_row_index
         self._branch_position_column_index = branch_position_column_index
-        self._initial_possibilities = initial_possibilities
-        self._possibilities_left = possibilities_left
+        self._initial_possibilities = numpy.copy(initial_possibilities)
+        self._possibilities_left = numpy.copy(initial_possibilities)
         self._id = uuid4()
         self._parent_id = parent_id
 
@@ -50,6 +50,8 @@ class BranchPoint:
         print("Root                   : " + str(self._is_root))
         print("Branch position row    : " + str(self._branch_position_row_index))
         print("Branch position column : " + str(self._branch_position_column_index))
+        print("Initial possibilities  : " + str(self._initial_possibilities))
+        print("Possibilities left     : " + str(self._possibilities_left))
 
 
     def get_branch_position_row(self) -> int:
