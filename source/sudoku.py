@@ -561,30 +561,30 @@ def predictable_numbers_in_positions(a: array, verbose: bool = False):
             print("R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(current_predictable_numbers))
 
 
-def get_best_position_indices_for_branching(a: array, verbose: bool = False) -> []:
-    """
-    Search through all positions and return the row_index and column_index of the first position
-    with the lowest count of possible numbers.
-    :param verbose:
-    :param a: A two-dimensional array with the sudoku data
-    :return: A list with the row_index and the column_index
-    """
-    best_position = []
-    current_possibilities = 10
-    for row_index in range(0, 9):
-        for column_index in range(0, 9):
-            if a[row_index, column_index] != 0:
-                continue
-            current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
-            if len(current_predictable_numbers) < current_possibilities:
-                current_possibilities = len(current_predictable_numbers)
-                best_position = [row_index, column_index]
-                # When can quit here if we already found a position with the lowest possibilities (=2)
-                if current_possibilities == 2:
-                    return best_position
-    if verbose:
-        print("Best position indices for branching : " + str(best_position))
-    return best_position
+# def get_best_position_indices_for_branching(a: array, verbose: bool = False) -> []:
+#     """
+#     Search through all positions and return the row_index and column_index of the first position
+#     with the lowest count of possible numbers.
+#     :param verbose:
+#     :param a: A two-dimensional array with the sudoku data
+#     :return: A list with the row_index and the column_index
+#     """
+#     best_position = []
+#     current_possibilities = 10
+#     for row_index in range(0, 9):
+#         for column_index in range(0, 9):
+#             if a[row_index, column_index] != 0:
+#                 continue
+#             current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
+#             if len(current_predictable_numbers) < current_possibilities:
+#                 current_possibilities = len(current_predictable_numbers)
+#                 best_position = [row_index, column_index]
+#                 # When can quit here if we already found a position with the lowest possibilities (=2)
+#                 if current_possibilities == 2:
+#                     return best_position
+#     if verbose:
+#         print("Best position indices for branching : " + str(best_position))
+#     return best_position
 
 
 def get_all_position_indices_for_branching(a: array, verbose: bool = False) -> []:
@@ -775,25 +775,17 @@ def main():
                 available_number = current_branch_point.pop_possible_number()
                 print("Trying out number " + str(available_number))
                 # Set possible number in position of our current matrix:
+                # current_branch_point.print()
                 current_array[
-                    current_branch_point.get_branch_position_row(), current_branch_point.get_branch_position_column()] \
+                    current_branch_point.get_branch_position_row_index(), current_branch_point.get_branch_position_column_index()] \
                     = available_number
 
             else:  # Matrix is not deadlocked
 
-                best_position_indices_for_branching = get_best_position_indices_for_branching(current_array, _verbose)
-
-                best_position_possible_numbers = predictable_numbers_in_position(current_array,
-                                                                                 best_position_indices_for_branching[0],
-                                                                                 best_position_indices_for_branching[1])
-                # print("== Best branch position is currently "
-                #       + "R" + str(best_position_indices_for_branching[0] + 1)
-                #       + ", C" + str(best_position_indices_for_branching[1] + 1)
-                #       + " with number " + str(best_position_possible_numbers[0]))
                 all_position_indices_for_branching = get_all_position_indices_for_branching(current_array)
-                # print("---" + str(all_position_indices_for_branching))
+                #print("---" + str(all_position_indices_for_branching))
                 current_position_indices_for_branching = all_position_indices_for_branching.pop()
-                # print("---" + str(current_position_indices_for_branching))
+                #print("---" + str(current_position_indices_for_branching))
                 current_position_possible_numbers = predictable_numbers_in_position(current_array,
                                                                                     current_position_indices_for_branching[0],
                                                                                     current_position_indices_for_branching[1])
@@ -814,7 +806,6 @@ def main():
                                                                                             0],
                                                                                         current_position_indices_for_branching[
                                                                                             1])
-                    # print("== Creating new branch point")
                     new_branch_point = BranchPoint(current_array,
                                                    parent_id=current_branch_point.get_id(),
                                                    branch_position_row_index=
@@ -822,17 +813,6 @@ def main():
                                                    branch_position_column_index=
                                                    current_position_indices_for_branching[1],
                                                    initial_possibilities=current_position_possible_numbers)
-
-
-
-                # print("== Creating new branch point")
-                # current_branch_point = BranchPoint(current_array,
-                #                                    parent_id=current_branch_point.get_id(),
-                #                                    branch_position_row_index=
-                #                                    best_position_indices_for_branching[0],
-                #                                    branch_position_column_index=
-                #                                    best_position_indices_for_branching[1],
-                #                                    initial_possibilities=best_position_possible_numbers)
 
                 current_branch_point = new_branch_point
                 branch_point_tree.add_branch_point(current_branch_point)
@@ -847,7 +827,7 @@ def main():
                     print("Trying out number " + str(available_number))
                 # Set possible number in best position of our current matrix:
                 current_array[
-                    best_position_indices_for_branching[0], best_position_indices_for_branching[1]] = available_number
+                    current_position_indices_for_branching[0], current_position_indices_for_branching[1]] = available_number
         if branch_point_tree.get_depth(current_branch_point) > max_branch_depth:
             max_branch_depth = branch_point_tree.get_depth(current_branch_point)
         current_branch_depth = branch_point_tree.get_depth(current_branch_point)

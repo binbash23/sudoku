@@ -79,6 +79,26 @@ class BranchPoint:
         else:
             return -1
 
+    def get_branch_position_row_index(self) -> int:
+        """
+        Get the branch position row index (0-8) or -1 if not set.
+        :return:
+        """
+        if self._branch_position_row_index > -1:
+            return self._branch_position_row_index
+        else:
+            return -1
+
+    def get_branch_position_column_index(self) -> int:
+        """
+        Get the branch position column index (0-8) or -1 if not set.
+        :return:
+        """
+        if self._branch_position_column_index > -1:
+            return self._branch_position_column_index
+        else:
+            return -1
+
     def get_branch_position_column(self) -> int:
         """
         Get the branch position column number (1-9) or -1 if not set.
