@@ -18,6 +18,8 @@ from branch_point_tree import BranchPointTree
 
 # Variables section
 zero = 0
+
+
 # _branch_point_tree: BranchPointTree = None
 # filename = "sudoku.txt"
 
@@ -64,7 +66,7 @@ def show(a: array):
     print()
 
 
-def count_zeros_in_sector(a: array, sector: int, verbose: bool=False) -> int:
+def count_zeros_in_sector(a: array, sector: int, verbose: bool = False) -> int:
     """
     Count the unknown numbers in the given sudoku matrix sector. The sector has to be
     between 1 and 9.
@@ -78,47 +80,47 @@ def count_zeros_in_sector(a: array, sector: int, verbose: bool=False) -> int:
         raise Exception("Sector must be between 1 and 9")
     if sector == 1:
         for x in range(0, 3):
-            for y in range(0,3):
+            for y in range(0, 3):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 2:
         for x in range(0, 3):
-            for y in range(3,6):
+            for y in range(3, 6):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 3:
         for x in range(0, 3):
-            for y in range(6,9):
+            for y in range(6, 9):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 4:
         for x in range(3, 6):
-            for y in range(0,3):
+            for y in range(0, 3):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 5:
         for x in range(3, 6):
-            for y in range(3,6):
+            for y in range(3, 6):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 6:
         for x in range(3, 6):
-            for y in range(6,9):
+            for y in range(6, 9):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 7:
         for x in range(6, 9):
-            for y in range(0,3):
+            for y in range(0, 3):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 8:
         for x in range(6, 9):
-            for y in range(3,6):
+            for y in range(3, 6):
                 if a[x, y] == zero:
                     count_nulls += 1
     if sector == 9:
         for x in range(6, 9):
-            for y in range(6,9):
+            for y in range(6, 9):
                 if a[x, y] == zero:
                     count_nulls += 1
     if verbose:
@@ -144,47 +146,47 @@ def predictable_numbers_in_sector(a: array, sector: int) -> array:
         raise Exception("Sector must be between 1 and 9")
     if sector == 1:
         for x in range(0, 3):
-            for y in range(0,3):
+            for y in range(0, 3):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 2:
         for x in range(0, 3):
-            for y in range(3,6):
+            for y in range(3, 6):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 3:
         for x in range(0, 3):
-            for y in range(6,9):
+            for y in range(6, 9):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 4:
         for x in range(3, 6):
-            for y in range(0,3):
+            for y in range(0, 3):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 5:
         for x in range(3, 6):
-            for y in range(3,6):
+            for y in range(3, 6):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 6:
         for x in range(3, 6):
-            for y in range(6,9):
+            for y in range(6, 9):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 7:
         for x in range(6, 9):
-            for y in range(0,3):
+            for y in range(0, 3):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 8:
         for x in range(6, 9):
-            for y in range(3,6):
+            for y in range(3, 6):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     if sector == 9:
         for x in range(6, 9):
-            for y in range(6,9):
+            for y in range(6, 9):
                 if a[x, y] != zero:
                     numbers = numpy.setdiff1d(numbers, a[x, y])
     return numbers
@@ -295,7 +297,7 @@ def predictable_numbers_in_column(a: array, column_index: int) -> array:
     :param column_index: The column index starting at 0
     :return: A list predictable numbers in the given column
     """
-    numbers = array(range(1,10))
+    numbers = array(range(1, 10))
     for j in range(0, 9):
         if a[j, column_index] != zero:
             numbers = numpy.setdiff1d(numbers, a[j, column_index])
@@ -310,7 +312,7 @@ def predictable_numbers_in_row(a: array, row_index: int) -> array:
     :param row_index: The row index starting at 0
     :return: A list predictable numbers in the given row
     """
-    numbers = array(range(1,10))
+    numbers = array(range(1, 10))
     for j in range(0, 9):
         if a[row_index, j] != zero:
             numbers = numpy.setdiff1d(numbers, a[row_index, j])
@@ -318,7 +320,7 @@ def predictable_numbers_in_row(a: array, row_index: int) -> array:
     return numbers
 
 
-def predictable_numbers_in_columns(a:array, verbose:bool=False):
+def predictable_numbers_in_columns(a: array, verbose: bool = False):
     """
     Print the predictable numbers to be filled in of all columns.
     :param verbose: Show debug info
@@ -329,13 +331,13 @@ def predictable_numbers_in_columns(a:array, verbose:bool=False):
     for i in range(0, 9):
         current_numbers = predictable_numbers_in_column(a, i)
         if len(current_numbers) > 1:
-            unsolved_columns+=1
+            unsolved_columns += 1
         if verbose:
-            print("Predictable numbers in C" + str(i+1) + " : " + str(current_numbers))
+            print("Predictable numbers in C" + str(i + 1) + " : " + str(current_numbers))
     print("Unsolved columns                 : " + str(unsolved_columns))
 
 
-def predictable_numbers_in_rows(a:array, verbose:bool=False):
+def predictable_numbers_in_rows(a: array, verbose: bool = False):
     """
     Print the predictable numbers to be filled in of all rows.
     :param verbose: Show debug info
@@ -348,11 +350,11 @@ def predictable_numbers_in_rows(a:array, verbose:bool=False):
         if len(current_numbers) > 1:
             unsolved_rows += 1
         if verbose:
-            print("Predictable numbers in R" + str(i+1) + " : " + str(current_numbers))
+            print("Predictable numbers in R" + str(i + 1) + " : " + str(current_numbers))
     print("Unsolved rows                    : " + str(unsolved_rows))
 
 
-def predictable_numbers_in_sectors(a:array, verbose:bool=False):
+def predictable_numbers_in_sectors(a: array, verbose: bool = False):
     """
     Print the predictable numbers to be filled in of all sectors.
     :param verbose: Show debug info
@@ -430,7 +432,7 @@ def count_zeros_in_columns(a: array, verbose: bool = False) -> int:
     return count_nulls
 
 
-def count_zeros(a:array) -> int:
+def count_zeros(a: array) -> int:
     """
     Count all zero numbers in the given matrix.
     :param a: A two-dimensional array with the sudoku data
@@ -439,7 +441,7 @@ def count_zeros(a:array) -> int:
     return count_zeros_in_columns(a, False)
 
 
-def count_non_zeros(a:array) -> int:
+def count_non_zeros(a: array) -> int:
     """
     Count all non-zero numbers in the given matrix.
     :param a: A two-dimensional array with the sudoku data
@@ -481,7 +483,8 @@ def get_sector_id(row_index: int, column_index: int) -> int:
     if row_index < 9 and column_index < 9:
         return 9
 
-def predictable_numbers_in_position(a: array, row_index: int, column_index: int, verbose: bool=False) -> array:
+
+def predictable_numbers_in_position(a: array, row_index: int, column_index: int, verbose: bool = False) -> array:
     """
     Search a list of predictable numbers that can fit in the position of the sudoku matrix
     :param verbose: Show debug info
@@ -498,18 +501,23 @@ def predictable_numbers_in_position(a: array, row_index: int, column_index: int,
             print("row_index : " + str(row_index))
             print("column_index : " + str(column_index))
         return array([trunc(a[row_index, column_index])])
-    numbers = numpy.intersect1d(predictable_numbers_in_column(a, column_index), predictable_numbers_in_row(a, row_index))
+    numbers = numpy.intersect1d(predictable_numbers_in_column(a, column_index),
+                                predictable_numbers_in_row(a, row_index))
     if verbose:
-        print("Predictable values in C" + str(column_index) + " : " + str(predictable_numbers_in_column(a, column_index)))
+        print(
+            "Predictable values in C" + str(column_index) + " : " + str(predictable_numbers_in_column(a, column_index)))
         print("Predictable values in R" + str(row_index) + " : " + str(predictable_numbers_in_row(a, row_index)))
-        print("Intersect between predictable values from C" + str(column_index) + " and R" + str(row_index) + " : " + str(numbers))
+        print(
+            "Intersect between predictable values from C" + str(column_index) + " and R" + str(row_index) + " : " + str(
+                numbers))
     numbers = numpy.intersect1d(numbers, predictable_numbers_in_sector(a, get_sector_id(row_index, column_index)))
     if verbose:
-        print("pPedictable numbers in S" + str(get_sector_id(row_index, column_index)) + " : " + str(predictable_numbers_in_sector(a, get_sector_id(row_index, column_index))))
+        print("pPedictable numbers in S" + str(get_sector_id(row_index, column_index)) + " : " + str(
+            predictable_numbers_in_sector(a, get_sector_id(row_index, column_index))))
     return numbers
 
 
-def save_predictable_numbers_in_positions(a: array, verbose: bool=False) -> int:
+def save_predictable_numbers_in_positions(a: array, verbose: bool = False) -> int:
     """
     Search save predictable numbers that can fit in a position with a zero of the sudoku
     :param verbose: Show debug info
@@ -523,14 +531,15 @@ def save_predictable_numbers_in_positions(a: array, verbose: bool=False) -> int:
                 continue
             current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
             if len(current_predictable_numbers) == 1:
-                save_predictable_positions+=1
+                save_predictable_positions += 1
             if verbose:
-                print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(current_predictable_numbers))
+                print(
+                    "R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(current_predictable_numbers))
     # print("Unknown positions                : " + str(unknown_positions))
     return save_predictable_positions
 
 
-def predictable_numbers_in_positions(a: array, verbose: bool=False):
+def predictable_numbers_in_positions(a: array, verbose: bool = False):
     """
     Loop through all positions and print possible numbers which may fit.
     :param verbose: Show debug info
@@ -541,11 +550,11 @@ def predictable_numbers_in_positions(a: array, verbose: bool=False):
         for column_index in range(0, 9):
             if a[row_index, column_index] != 0:
                 if verbose:
-                    print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : "
+                    print("R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : "
                           + str(trunc(a[row_index, column_index])) + " *FIX*")
                 continue
             current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
-            print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(current_predictable_numbers))
+            print("R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(current_predictable_numbers))
 
 
 def get_best_position_indices_for_branching(a: array) -> []:
@@ -571,7 +580,7 @@ def get_best_position_indices_for_branching(a: array) -> []:
     return best_position
 
 
-def analyze_sudoku(a, verbose: bool=False):
+def analyze_sudoku(a, verbose: bool = False):
     """
     Prints out some structure analysis of the sudoku matrix in arg a
     :param a: A two-dimensional array with the sudoku data
@@ -594,7 +603,7 @@ def analyze_sudoku(a, verbose: bool=False):
     print("Sudoku is deadlocked             : " + str(is_deadlocked(a)))
 
 
-def fill_save_predictable_zeros(a:array, verbose:bool=False) -> array:
+def fill_save_predictable_zeros(a: array, verbose: bool = False) -> array:
     """
     Calculate all predictable numbers for zeros in a given sudoku array and return the new array
     :param a: A two-dimensional array with the sudoku data
@@ -602,11 +611,12 @@ def fill_save_predictable_zeros(a:array, verbose:bool=False) -> array:
     :return:
     """
     filled_array = numpy.copy(a)
-    for column_index in range(0,9):
+    for column_index in range(0, 9):
         for row_index in range(0, 9):
             if filled_array[row_index, column_index] != zero:
                 if verbose:
-                    print("filled_array[row_index, column_index] != zero : " + str(filled_array[row_index, column_index]))
+                    print(
+                        "filled_array[row_index, column_index] != zero : " + str(filled_array[row_index, column_index]))
                 continue
             current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
             if len(current_predictable_numbers) == 1:
@@ -614,27 +624,28 @@ def fill_save_predictable_zeros(a:array, verbose:bool=False) -> array:
             else:
                 filled_array[row_index, column_index] = 0
             if verbose:
-                print("R" + str(row_index+1) + ", C" + str(column_index+1) + " : " + str(filled_array[row_index, column_index]))
+                print("R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(
+                    filled_array[row_index, column_index]))
     return filled_array
 
 
-def is_complete(a:array, verbose:bool=False) -> bool:
+def is_complete(a: array, verbose: bool = False) -> bool:
     """
     Checks if there are unknown numbers in a sudoku matrix and returns False if there
     are any zeros in the matrix. Returns True if there are only non-zero numbers.
     :param a: A two-dimensional array with the sudoku data
     :return: True if the matrix has only non-zero numbers
     """
-    for column_index in range(0,9):
+    for column_index in range(0, 9):
         for row_index in range(0, 9):
             if a[row_index, column_index] == zero:
                 if verbose:
-                    print("First zero number found at R" + str(row_index+1) + ", C" + str(column_index+1))
+                    print("First zero number found at R" + str(row_index + 1) + ", C" + str(column_index + 1))
                 return False
     return True
 
 
-def is_deadlocked(a:array, verbose:bool=False) -> bool:
+def is_deadlocked(a: array, verbose: bool = False) -> bool:
     """
     Checks if the matrix is in a deadlock state. This is when a position exists that has a number
     which is already used in a dependent row, column or sector.
@@ -642,18 +653,17 @@ def is_deadlocked(a:array, verbose:bool=False) -> bool:
     :param a: A two-dimensional array with the sudoku data
     :return: True if the matrix is deadlocked
     """
-    for column_index in range(0,9):
+    for column_index in range(0, 9):
         for row_index in range(0, 9):
             current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
             if len(current_predictable_numbers) == 0:
                 if verbose:
-                    print("Found deadlock in R" + str(row_index+1) + ", C" + str(column_index+1))
+                    print("Found deadlock in R" + str(row_index + 1) + ", C" + str(column_index + 1))
                 return True
     return False
 
 
 def main():
-
     parser = OptionParser()
     parser.add_option("-f", "--file", dest="filename",
                       help="read sudoku from FILE", metavar="FILE")
@@ -685,9 +695,9 @@ def main():
     iterations = 0
     while (not is_complete(current_array)
            and not is_deadlocked(current_array)
-           and save_predictable_numbers_in_positions(current_array)>0):
+           and save_predictable_numbers_in_positions(current_array) > 0):
         current_array = fill_save_predictable_zeros(current_array, _verbose)
-        iterations+=1
+        iterations += 1
         print()
         print("== Iteration no " + str(iterations) + ":")
         show(current_array)
@@ -697,8 +707,10 @@ def main():
             print("== No position with save predictable numbers available.")
             current_best_position_indices_for_branching = get_best_position_indices_for_branching(current_array)
             current_best_position_possibilities = predictable_numbers_in_position(current_array,
-                                                                                  current_best_position_indices_for_branching[0],
-                                                                                  current_best_position_indices_for_branching[1])
+                                                                                  current_best_position_indices_for_branching[
+                                                                                      0],
+                                                                                  current_best_position_indices_for_branching[
+                                                                                      1])
             print("== Best first position indices for branching are "
                   + str(current_best_position_indices_for_branching))
             # predictable_numbers_in_positions(current_array)
@@ -708,8 +720,10 @@ def main():
             print("== Creating new branch point")
             branch_point_tree.add_branch_point(BranchPoint(current_array,
                                                            parent_id=current_branch_point.get_id(),
-                                                           branch_position_row_index=current_best_position_indices_for_branching[0],
-                                                           branch_position_column_index=current_best_position_indices_for_branching[1],
+                                                           branch_position_row_index=
+                                                           current_best_position_indices_for_branching[0],
+                                                           branch_position_column_index=
+                                                           current_best_position_indices_for_branching[1],
                                                            initial_possibilities=current_best_position_possibilities))
             print("##########")
             branch_point_tree.print()
@@ -728,8 +742,6 @@ def main():
         print("No save predictable numbers found.")
         # branch_point_tree.add_branch_point(BranchPoint(current_array, parent_id=current_branch_point.get_id()))
         # branch_point_tree.print()
-
-
 
 
 if __name__ == '__main__':
