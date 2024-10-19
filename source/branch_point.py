@@ -144,9 +144,43 @@ class BranchPoint:
         """
         possibility = None
         if self.has_possibilities_left():
+            # possibility = self._possibilities_left[len(self._possibilities_left)-1]
+            # self._possibilities_left = numpy.delete(self._possibilities_left, len(self._possibilities_left)-1)
+
             possibility = self._possibilities_left[0]
             self._possibilities_left = numpy.delete(self._possibilities_left, 0)
         return possibility
+
+    def get_array(self) -> array:
+        """
+        Get a copy of the array/matrix with the sudoku data.
+        :return: The sudoku array
+        """
+        return numpy.copy(self._a)
+
+    def __eq__(self, other):
+        """
+        Compare two BranchPoints whether the array and the branch coordinates are equal.
+        :param other: Another branch point object
+        :return: True if the arrays and branch point coordinates are the same
+        """
+        if isinstance(other, BranchPoint):
+            if (numpy.array_equal(self._a, other._a) and self.get_branch_position_row() == other.get_branch_position_row()
+                    and self.get_branch_position_column() == other.get_branch_position_column()):
+                # print("First array:")
+                # print(self._a)
+                # print("First coordinates:")
+                # print("R" + str(self.get_branch_position_row()) + ", C" + str(self.get_branch_position_column()))
+                #
+                # print("Second array:")
+                # print(other._a)
+                # print("Second coordinates:")
+                # print("R" + str(other.get_branch_position_row()) + ", C" + str(other.get_branch_position_column()))
+                return True
+            else:
+                return False
+        else:
+            return NotImplemented
 
 
 def main():

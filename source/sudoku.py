@@ -8,6 +8,7 @@ sudoku.py
 
 import random
 import sys
+from datetime import datetime
 from math import trunc
 from optparse import OptionParser
 
@@ -18,6 +19,9 @@ from branch_point_tree import BranchPointTree
 
 # Variables section
 zero = 0
+max_branch_depth = 0
+current_branch_depth = 0
+min_unsolved_positions = 81
 
 
 # _branch_point_tree: BranchPointTree = None
@@ -583,6 +587,25 @@ def get_best_position_indices_for_branching(a: array, verbose: bool = False) -> 
     return best_position
 
 
+def get_all_position_indices_for_branching(a: array, verbose: bool = False) -> []:
+    """
+    Search through all positions and return an array of all [row_index, column_index] positions
+    which are not solved yet.
+    :param verbose:
+    :param a: A two-dimensional array with the sudoku data
+    :return: An array of [row_index and the column_index] combinations
+    """
+    all_positions = []
+    current_possibilities = 10
+    for row_index in range(0, 9):
+        for column_index in range(0, 9):
+            if a[row_index, column_index] != 0:
+                continue
+            # all_positions += [row_index, column_index]
+            all_positions.append([row_index, column_index])
+    return all_positions
+
+
 def analyze_sudoku(a, verbose: bool = False):
     """
     Prints out some structure analysis of the sudoku matrix in arg a
@@ -590,20 +613,24 @@ def analyze_sudoku(a, verbose: bool = False):
     :param verbose: Show some debug info
     :return:
     """
-    print("== Analyzing sudoku")
-    #print("== Duplicate checking in rows")
+    global max_branch_depth
+    global min_unsolved_positions
+    global current_branch_depth
+    print("== Analyzing situation ==")
+    print()
+    print("Sudoku is solved                 : " + str(is_solved(a)))
+    print("Sudoku is deadlocked             : " + str(is_deadlocked(a)))
     print("Found duplicates in rows         : " + str(rows_have_duplicates(a)))
-    #print("== Duplicate checking in columns")
     print("Found duplicates in columns      : " + str(columns_have_duplicates(a)))
-    #print("== Non-zero numbers in matrix")
-    print("Non-zero numbers                 : " + str(count_non_zeros(a)))
-    #print("== Save predictable numbers in positions")
+    print("Solved positions                 : " + str(count_non_zeros(a)) + " / 81")
+    print("Unsolved positions               : " + str(81 - count_non_zeros(a)))
+    if 81 - count_non_zeros(a) < min_unsolved_positions:
+        min_unsolved_positions = 81 - count_non_zeros(a)
+    print("Min unsolved positions           : " + str(min_unsolved_positions))
     print("Save predicable positions        : "
           + str(save_predictable_numbers_in_positions(a, verbose)))
-    #print("== Checking if sudoku is complete")
-    print("Sudoku is complete               : " + str(is_complete(a)))
-    #print("== Checking if sudoku is deadlocked")
-    print("Sudoku is deadlocked             : " + str(is_deadlocked(a)))
+    print("Current depth                    : " + str(current_branch_depth))
+    print("Max depth                        : " + str(max_branch_depth))
 
 
 def fill_save_predictable_zeros(a: array, verbose: bool = False) -> array:
@@ -632,7 +659,7 @@ def fill_save_predictable_zeros(a: array, verbose: bool = False) -> array:
     return filled_array
 
 
-def is_complete(a: array, verbose: bool = False) -> bool:
+def is_solved(a: array, verbose: bool = False) -> bool:
     """
     Checks if there are unknown numbers in a sudoku matrix and returns False if there
     are any zeros in the matrix. Returns True if there are only non-zero numbers.
@@ -651,7 +678,8 @@ def is_complete(a: array, verbose: bool = False) -> bool:
 def is_deadlocked(a: array, verbose: bool = False) -> bool:
     """
     Checks if the matrix is in a deadlock state. This is when a position exists that has a number
-    which is already used in a dependent row, column or sector.
+    which is already used in a dependent row, column or sector. Or in other words, if a position
+    exists that has an empty list of possible numbers to put into.
     :param verbose: Show debug info
     :param a: A two-dimensional array with the sudoku data
     :return: True if the matrix is deadlocked
@@ -685,64 +713,165 @@ def main():
     if options.verbose:
         _verbose = options.verbose
 
+    print()
+    print("== Starting sudoku ==")
+    start_datetime = datetime.now()
     show(a)
     analyze_sudoku(a, _verbose)
 
     # Initialize the branch point tree with the root array
     branch_point_tree = BranchPointTree(a)
-    branch_point_tree.print()
+    if _verbose:
+        branch_point_tree.print()
 
     # Main Loop to dive into the branch to the solution #
+    global max_branch_depth
+    global current_branch_depth
     current_branch_point = branch_point_tree.get_root()
     current_array = numpy.copy(a)
     iterations = 0
-    while (not is_complete(current_array)
-           and not is_deadlocked(current_array)
-           and save_predictable_numbers_in_positions(current_array) > 0):
+    while not is_solved(current_array):
         current_array = fill_save_predictable_zeros(current_array, _verbose)
         iterations += 1
         print()
-        print("== Iteration no " + str(iterations) + ":")
+        print("== Iteration no " + str(iterations) + " / " + str(branch_point_tree.get_size()) + " BranchPoints ==")
         show(current_array)
         analyze_sudoku(current_array, _verbose)
-        if is_complete(current_array):
+        if is_solved(current_array):
             break
 
         if save_predictable_numbers_in_positions(current_array) == 0:
+            print()
             print("== No position with save predictable numbers available.")
-            best_position_indices_for_branching = get_best_position_indices_for_branching(current_array, True)
+            print("Current branch point is " + str(current_branch_point.get_id()) + " depth "
+                  + str(branch_point_tree.get_depth(current_branch_point)))
+            print("Current branch point parent is " + str(current_branch_point.get_parent_id()))
 
-            best_position_possibilities = predictable_numbers_in_position(current_array,
-                                                                          best_position_indices_for_branching[0],
-                                                                          best_position_indices_for_branching[1])
-            print("== Best first position indices for branching are "
-                  + str(best_position_indices_for_branching))
-            # predictable_numbers_in_positions(current_array)
-            if len(best_position_indices_for_branching) == 0:
-                print("== NO BRANCH POSITION FOUND")
-                break
-            print("== Creating new branch point")
-            branch_point_tree.add_branch_point(BranchPoint(current_array,
-                                                           parent_id=current_branch_point.get_id(),
-                                                           branch_position_row_index=
-                                                           best_position_indices_for_branching[0],
-                                                           branch_position_column_index=
-                                                           best_position_indices_for_branching[1],
-                                                           initial_possibilities=best_position_possibilities))
-            print("##########")
-            branch_point_tree.print()
-            sys.exit()
+            if is_deadlocked(current_array, _verbose):
+                print("Deadlock detected!")
+                if current_branch_point.has_possibilities_left():
+                    print("Current branch point has possibilities left.")
+                    print("Going back to latest branch point matrix.")
+                else:
+                    print("Current branch point has NO possibilities left.")
+                    print("Trying to go back to a previous branch point which has possibilities left.")
+                    levels_up = 0
+                    while not current_branch_point.has_possibilities_left():
+                        current_branch_point = branch_point_tree.get_parent_of(current_branch_point)
+                        levels_up += 1
+                        if current_branch_point is None:
+                            print()
+                            print("*** Error: Root branch point reached and it has no possibilities left. ***")
+                            print("*** Maybe this sudoku can not be solved?! ***")
+                            sys.exit()
+                    print("Went up " + str(levels_up) + " in branch point tree to find a left possibility.")
+
+                print("Reverting array to branch point " + str(current_branch_point.get_id()))
+                print("Branch point depth is " + str(branch_point_tree.get_depth(current_branch_point)))
+                current_array = current_branch_point.get_array()
+                print("Possibilities left : " + str(current_branch_point.get_possibilities_left()))
+
+                # modify current matrix with a new number and try it out
+                available_number = current_branch_point.pop_possible_number()
+                print("Trying out number " + str(available_number))
+                # Set possible number in position of our current matrix:
+                current_array[
+                    current_branch_point.get_branch_position_row(), current_branch_point.get_branch_position_column()] \
+                    = available_number
+
+            else:  # Matrix is not deadlocked
+
+                best_position_indices_for_branching = get_best_position_indices_for_branching(current_array, _verbose)
+
+                best_position_possible_numbers = predictable_numbers_in_position(current_array,
+                                                                                 best_position_indices_for_branching[0],
+                                                                                 best_position_indices_for_branching[1])
+                # print("== Best branch position is currently "
+                #       + "R" + str(best_position_indices_for_branching[0] + 1)
+                #       + ", C" + str(best_position_indices_for_branching[1] + 1)
+                #       + " with number " + str(best_position_possible_numbers[0]))
+                all_position_indices_for_branching = get_all_position_indices_for_branching(current_array)
+                # print("---" + str(all_position_indices_for_branching))
+                current_position_indices_for_branching = all_position_indices_for_branching.pop()
+                # print("---" + str(current_position_indices_for_branching))
+                current_position_possible_numbers = predictable_numbers_in_position(current_array,
+                                                                                    current_position_indices_for_branching[0],
+                                                                                    current_position_indices_for_branching[1])
+                print("== Creating new branch point")
+                new_branch_point = BranchPoint(current_array,
+                                                   parent_id=current_branch_point.get_id(),
+                                                   branch_position_row_index=
+                                                   current_position_indices_for_branching[0],
+                                                   branch_position_column_index=
+                                                   current_position_indices_for_branching[1],
+                                                   initial_possibilities=current_position_possible_numbers)
+                while branch_point_tree.exists(new_branch_point):
+                    print("Branch point already exists.")
+                    print("Trying another row column position.")
+                    current_position_indices_for_branching = all_position_indices_for_branching.pop()
+                    current_position_possible_numbers = predictable_numbers_in_position(current_array,
+                                                                                        current_position_indices_for_branching[
+                                                                                            0],
+                                                                                        current_position_indices_for_branching[
+                                                                                            1])
+                    # print("== Creating new branch point")
+                    new_branch_point = BranchPoint(current_array,
+                                                   parent_id=current_branch_point.get_id(),
+                                                   branch_position_row_index=
+                                                   current_position_indices_for_branching[0],
+                                                   branch_position_column_index=
+                                                   current_position_indices_for_branching[1],
+                                                   initial_possibilities=current_position_possible_numbers)
+
+
+
+                # print("== Creating new branch point")
+                # current_branch_point = BranchPoint(current_array,
+                #                                    parent_id=current_branch_point.get_id(),
+                #                                    branch_position_row_index=
+                #                                    best_position_indices_for_branching[0],
+                #                                    branch_position_column_index=
+                #                                    best_position_indices_for_branching[1],
+                #                                    initial_possibilities=best_position_possible_numbers)
+
+                current_branch_point = new_branch_point
+                branch_point_tree.add_branch_point(current_branch_point)
+                print("New branch point is " + str(current_branch_point.get_id()))
+
+                # modify current matrix with a new number and try it out
+                available_number = current_branch_point.pop_possible_number()
+                if _verbose:
+                    print("Possibilities left : " + str(current_branch_point.get_possibilities_left()))
+
+                if _verbose:
+                    print("Trying out number " + str(available_number))
+                # Set possible number in best position of our current matrix:
+                current_array[
+                    best_position_indices_for_branching[0], best_position_indices_for_branching[1]] = available_number
+        if branch_point_tree.get_depth(current_branch_point) > max_branch_depth:
+            max_branch_depth = branch_point_tree.get_depth(current_branch_point)
+        current_branch_depth = branch_point_tree.get_depth(current_branch_point)
 
     print()
-
     print("Operation stopped.")
-    print("Branch points   : " + str(branch_point_tree.get_size()))
-    print("Iterations done : " + str(iterations))
+    print()
+    stop_datetime = datetime.now()
+    print("Runtime       : " + str(stop_datetime - start_datetime))
+    print("Branch points : " + str(branch_point_tree.get_size()))
+    if _verbose:
+        print()
+        branch_point_tree.print()
+        print()
+    print("Iterations    : " + str(iterations))
+    print()
     if is_deadlocked(current_array):
-        print("Sudoku is deadlocked:")
+        print("Sudoku is deadlocked!")
         is_deadlocked(current_array, True)
-    if is_complete(current_array):
-        print("*** Bingo! Sudoku is complete. ***")
+    if is_solved(current_array):
+        print("*** Bingo! Sudoku is solved. ***")
+    else:
+        print("*** Sudoku is NOT solved. ***")
+    print()
 
 
 if __name__ == '__main__':
