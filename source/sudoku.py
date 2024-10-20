@@ -606,18 +606,18 @@ def fill_save_predictable_zeros(a: array, verbose: bool = False) -> array:
     for column_index in range(0, 9):
         for row_index in range(0, 9):
             if filled_array[row_index, column_index] != zero:
-                if verbose:
-                    print(
-                        "filled_array[row_index, column_index] != zero : " + str(filled_array[row_index, column_index]))
+                # if verbose:
+                #     print(
+                #         "filled_array[row_index, column_index] != zero : " + str(filled_array[row_index, column_index]))
                 continue
             current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
             if len(current_predictable_numbers) == 1:
                 filled_array[row_index, column_index] = current_predictable_numbers[0]
             else:
                 filled_array[row_index, column_index] = 0
-            if verbose:
-                print("R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(
-                    filled_array[row_index, column_index]))
+            # if verbose:
+            #     print("R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(
+            #         filled_array[row_index, column_index]))
     return filled_array
 
 
@@ -679,6 +679,9 @@ def main():
     parser.add_option("-v", "--verbose",
                       action="store_true", dest="verbose", default=False,
                       help="be verbose")
+    parser.add_option("-c", "--clear-console",
+                      action="store_true", dest="clear", default=False,
+                      help="clear console after every calculation")
 
     (options, args) = parser.parse_args()
 
@@ -727,7 +730,8 @@ def main():
             "== Branch point " + branch_point_tree.get_branch_point_info(current_branch_point) + " / Iteration #" + str(
                 iterations_from_latest_branch) + " ==")
 
-        clear_console()
+        if options.clear:
+            clear_console()
         show(current_array)
         analyze_sudoku(current_array, _verbose)
         if is_solved(current_array):
