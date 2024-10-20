@@ -69,6 +69,14 @@ class BranchPoint:
         print("Initial possibilities  : " + str(self._initial_possibilities))
         print("Possibilities left     : " + str(self._possibilities_left))
 
+    def get_branch_info(self):
+        """
+        Get the branch information in this format R4, C4: [2 6 8]
+        :return: The info string
+        """
+        return ("R" + str(self.get_branch_position_row()) + ", C" + str(self.get_branch_position_column()) +
+                ": " + str(self.get_initial_possibilities()))
+
     def get_branch_position_row(self) -> int:
         """
         Get the branch position row number (1-9) or -1 if not set.

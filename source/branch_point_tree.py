@@ -69,6 +69,14 @@ class BranchPointTree:
         """
         return len(self._branch_point_array)
 
+    def get_branch_point_info(self, branch_point: BranchPoint) -> str:
+        """
+        Get a string with information about the branch point: R, C, possiblities, depth
+        :param branch_point:
+        :return: A string with the information
+        """
+        return branch_point.get_branch_info() + ", depth " + str(self.get_depth(branch_point))
+
     def get_branch_point(self, branch_point_id: uuid4) -> BranchPoint | None:
         """
         Get a branch point by id.

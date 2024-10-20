@@ -16,12 +16,16 @@ import numpy
 from numpy import array
 from branch_point import BranchPoint
 from branch_point_tree import BranchPointTree
+from iteration_utilities import duplicates
 
 # Variables section
 zero = 0
 max_branch_depth = 0
 current_branch_depth = 0
 min_unsolved_positions = 81
+iterations = 0
+iterations_from_latest_branch = 0
+branch_point_tree = None
 
 
 # _branch_point_tree: BranchPointTree = None
@@ -272,26 +276,16 @@ def column_has_duplicates(a: array, column_index: int) -> bool:
     :param column_index: The index of the column starting at 0
     :return: True if a number from 1 to 9 appears more than one time in the column
     """
-    numbers = array(range(1, 10))
-    matched = False
-    for j in range(0, 9):
-        if a[j, column_index] == zero:
-            # print("Found N value, skipping")
-            continue
-        matched = False
-        # print("Checking: array[" + str(j) + ", " + str(column_nr) + "] : " + str(a[j, column_nr]))
-        for x in range(0, numbers.size):
-            # print("Verifying: " + str(a[j, column_nr]) + " with " + str(numbers[x]))
-            if str(a[j, column_index]) == str(numbers[x]):
-                # print("Found: " + str(numbers[x]))
-                matched = True
-                # print("Deleting " + str(numbers[x]) + " from numbers array")
-                numbers = numpy.delete(numbers, x)
-                break
-    if matched:
-        return True
-    else:
-        return False
+    list_without_zeros = []
+    for i in range(0, 9):
+        if trunc(a[i, column_index]) != 0:
+            # print("Adding : " + str(trunc(a[row_index, i])))
+            list_without_zeros += [trunc(a[i, column_index])]
+    # print("-" + str(list_without_zeros))
+    _duplicates = duplicates(list_without_zeros)
+    # print("--" + str(list(_duplicates)))
+    # sys.exit()
+    return len(list(_duplicates)) > 0
 
 
 def predictable_numbers_in_column(a: array, column_index: int) -> array:
@@ -382,26 +376,16 @@ def row_has_duplicates(a: array, row_index: int) -> bool:
     :param row_index: The row index starting at 0
     :return: True if the row has a number between 1 and 9 more than one time
     """
-    numbers = array(range(1, 10))
-    matched = False
-    for j in range(0, 9):
-        #print("Checking: array[" + str(j) + ", " + str(row_nr) + "] : " + str(a[row_nr, j]))
-        if a[row_index, j] == zero:
-            #print("Found N value, skipping")
-            continue
-        matched = False
-        for x in range(0, numbers.size):
-            # print("Verifying: " + str(a[j, column_nr]) + " with " + str(numbers[x]))
-            if str(a[row_index, j]) == str(numbers[x]):
-                # print("Found: " + str(numbers[x]))
-                matched = True
-                # print("Deleting " + str(numbers[x]) + " from numbers array")
-                numbers = numpy.delete(numbers, x)
-                break
-    if matched:
-        return True
-    else:
-        return False
+    list_without_zeros = []
+    for i in range(0, 9):
+        if trunc(a[row_index, i]) != 0:
+            # print("Adding : " + str(trunc(a[row_index, i])))
+            list_without_zeros += [trunc(a[row_index, i])]
+    # print("-" + str(list_without_zeros))
+    _duplicates = duplicates(list_without_zeros)
+    # print("--" + str(list(_duplicates)))
+    # sys.exit()
+    return len(list(_duplicates)) > 0
 
 
 def rows_have_duplicates(a: array, verbose: bool = False) -> bool:
@@ -616,7 +600,10 @@ def analyze_sudoku(a, verbose: bool = False):
     global max_branch_depth
     global min_unsolved_positions
     global current_branch_depth
-    print("== Analyzing situation ==")
+    global iterations
+    global iterations_from_latest_branch
+    global branch_point_tree
+    print("== Analyzing ==")
     print()
     print("Sudoku is solved                 : " + str(is_solved(a)))
     print("Sudoku is deadlocked             : " + str(is_deadlocked(a)))
@@ -629,8 +616,14 @@ def analyze_sudoku(a, verbose: bool = False):
     print("Min unsolved positions           : " + str(min_unsolved_positions))
     print("Save predicable positions        : "
           + str(save_predictable_numbers_in_positions(a, verbose)))
+    if branch_point_tree is not None:
+        print("Branch points                    : " + str(branch_point_tree.get_size()))
+    else:
+        print("Branch points                    : 0")
     print("Current depth                    : " + str(current_branch_depth))
     print("Max depth                        : " + str(max_branch_depth))
+    print("Iteration from latest branch     : " + str(iterations_from_latest_branch))
+    print("Iteration in total               : " + str(iterations))
 
 
 def fill_save_predictable_zeros(a: array, verbose: bool = False) -> array:
@@ -663,9 +656,12 @@ def is_solved(a: array, verbose: bool = False) -> bool:
     """
     Checks if there are unknown numbers in a sudoku matrix and returns False if there
     are any zeros in the matrix. Returns True if there are only non-zero numbers.
+    :param verbose: Show debug info
     :param a: A two-dimensional array with the sudoku data
     :return: True if the matrix has only non-zero numbers
     """
+    if columns_have_duplicates(a) or rows_have_duplicates(a):
+        return False
     for column_index in range(0, 9):
         for row_index in range(0, 9):
             if a[row_index, column_index] == zero:
@@ -694,6 +690,19 @@ def is_deadlocked(a: array, verbose: bool = False) -> bool:
     return False
 
 
+def all_numbers_are_between_0_and_9(a: array) -> bool:
+    """
+    Check if any number in the matrix is smaller than 0 or bigger than 9.
+    :param a: A two-dimensional array with the sudoku data
+    :return: True if all numbers are between 0 and 9
+    """
+    for column_index in range(0, 9):
+        for row_index in range(0, 9):
+            if trunc(a[row_index, column_index]) < 0 or trunc(a[row_index, column_index]) > 9:
+                return False
+    return True
+
+
 def main():
     parser = OptionParser()
     parser.add_option("-f", "--file", dest="filename",
@@ -719,7 +728,14 @@ def main():
     show(a)
     analyze_sudoku(a, _verbose)
 
+    if columns_have_duplicates(a) or rows_have_duplicates(a) or not all_numbers_are_between_0_and_9(a):
+        print()
+        print("*** Sudoku is not valid. ***")
+        print()
+        sys.exit()
+
     # Initialize the branch point tree with the root array
+    global branch_point_tree
     branch_point_tree = BranchPointTree(a)
     if _verbose:
         branch_point_tree.print()
@@ -729,12 +745,18 @@ def main():
     global current_branch_depth
     current_branch_point = branch_point_tree.get_root()
     current_array = numpy.copy(a)
+    global iterations
     iterations = 0
+    global iterations_from_latest_branch
+    iterations_from_latest_branch = 0
     while not is_solved(current_array):
         current_array = fill_save_predictable_zeros(current_array, _verbose)
         iterations += 1
+        iterations_from_latest_branch += 1
         print()
-        print("== Iteration no " + str(iterations) + " / " + str(branch_point_tree.get_size()) + " BranchPoints ==")
+        print("== Branch point " + branch_point_tree.get_branch_point_info(current_branch_point) + " / Iteration #" + str(
+            iterations_from_latest_branch) + " ==")
+
         show(current_array)
         analyze_sudoku(current_array, _verbose)
         if is_solved(current_array):
@@ -743,12 +765,17 @@ def main():
         if save_predictable_numbers_in_positions(current_array) == 0:
             print()
             print("== No position with save predictable numbers available.")
-            print("Current branch point is " + str(current_branch_point.get_id()) + " depth "
-                  + str(branch_point_tree.get_depth(current_branch_point)))
-            print("Current branch point parent is " + str(current_branch_point.get_parent_id()))
+            print("Current branch point        : " + branch_point_tree.get_branch_point_info(current_branch_point))
+            print("Current branch point parent : " + branch_point_tree.get_branch_point_info(current_branch_point))
 
-            if is_deadlocked(current_array, _verbose):
-                print("Deadlock detected!")
+            if is_deadlocked(current_array, _verbose) or rows_have_duplicates(current_array) or columns_have_duplicates(current_array):
+                if is_deadlocked(current_array):
+                    print("Deadlock detected!")
+                if rows_have_duplicates(current_array):
+                    print("Rows with duplicates detected!")
+                if columns_have_duplicates(current_array):
+                    print("Columns with duplicates detected!")
+
                 if current_branch_point.has_possibilities_left():
                     print("Current branch point has possibilities left.")
                     print("Going back to latest branch point matrix.")
@@ -764,39 +791,39 @@ def main():
                             print("*** Error: Root branch point reached and it has no possibilities left. ***")
                             print("*** Maybe this sudoku can not be solved?! ***")
                             sys.exit()
-                    print("Went up " + str(levels_up) + " in branch point tree to find a left possibility.")
+                    print("Went up " + str(levels_up) + " levels in branch point tree to find a left possibility.")
 
-                print("Reverting array to branch point " + str(current_branch_point.get_id()))
-                print("Branch point depth is " + str(branch_point_tree.get_depth(current_branch_point)))
+                print("Reverting array to branch point " + branch_point_tree.get_branch_point_info(current_branch_point))
+                # print("Branch point depth is " + str(branch_point_tree.get_depth(current_branch_point)))
                 current_array = current_branch_point.get_array()
-                print("Possibilities left : " + str(current_branch_point.get_possibilities_left()))
+                print("Possibilities left in current branch point : " + str(current_branch_point.get_possibilities_left()))
 
                 # modify current matrix with a new number and try it out
                 available_number = current_branch_point.pop_possible_number()
                 print("Trying out number " + str(available_number))
                 # Set possible number in position of our current matrix:
-                # current_branch_point.print()
                 current_array[
                     current_branch_point.get_branch_position_row_index(), current_branch_point.get_branch_position_column_index()] \
                     = available_number
+                iterations_from_latest_branch = 0
 
             else:  # Matrix is not deadlocked
 
                 all_position_indices_for_branching = get_all_position_indices_for_branching(current_array)
-                #print("---" + str(all_position_indices_for_branching))
                 current_position_indices_for_branching = all_position_indices_for_branching.pop()
-                #print("---" + str(current_position_indices_for_branching))
                 current_position_possible_numbers = predictable_numbers_in_position(current_array,
-                                                                                    current_position_indices_for_branching[0],
-                                                                                    current_position_indices_for_branching[1])
+                                                                                    current_position_indices_for_branching[
+                                                                                        0],
+                                                                                    current_position_indices_for_branching[
+                                                                                        1])
                 print("== Creating new branch point")
                 new_branch_point = BranchPoint(current_array,
-                                                   parent_id=current_branch_point.get_id(),
-                                                   branch_position_row_index=
-                                                   current_position_indices_for_branching[0],
-                                                   branch_position_column_index=
-                                                   current_position_indices_for_branching[1],
-                                                   initial_possibilities=current_position_possible_numbers)
+                                               parent_id=current_branch_point.get_id(),
+                                               branch_position_row_index=
+                                               current_position_indices_for_branching[0],
+                                               branch_position_column_index=
+                                               current_position_indices_for_branching[1],
+                                               initial_possibilities=current_position_possible_numbers)
                 while branch_point_tree.exists(new_branch_point):
                     print("Branch point already exists.")
                     print("Trying another row column position.")
@@ -816,18 +843,17 @@ def main():
 
                 current_branch_point = new_branch_point
                 branch_point_tree.add_branch_point(current_branch_point)
-                print("New branch point is " + str(current_branch_point.get_id()))
+                print("New branch point is " + branch_point_tree.get_branch_point_info(current_branch_point))
 
                 # modify current matrix with a new number and try it out
                 available_number = current_branch_point.pop_possible_number()
-                if _verbose:
-                    print("Possibilities left : " + str(current_branch_point.get_possibilities_left()))
 
-                if _verbose:
-                    print("Trying out number " + str(available_number))
+                print("Trying out number " + str(available_number))
                 # Set possible number in best position of our current matrix:
                 current_array[
-                    current_position_indices_for_branching[0], current_position_indices_for_branching[1]] = available_number
+                    current_position_indices_for_branching[0], current_position_indices_for_branching[
+                        1]] = available_number
+                iterations_from_latest_branch = 0
         if branch_point_tree.get_depth(current_branch_point) > max_branch_depth:
             max_branch_depth = branch_point_tree.get_depth(current_branch_point)
         current_branch_depth = branch_point_tree.get_depth(current_branch_point)
