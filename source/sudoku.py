@@ -29,10 +29,6 @@ iterations_from_latest_branch = 0
 branch_point_tree = None
 
 
-# _branch_point_tree: BranchPointTree = None
-# filename = "sudoku.txt"
-
-
 # Functions section
 
 def clear_console():
@@ -44,6 +40,7 @@ def clear_console():
         os.system("cls")
     else:
         os.system("clear")
+
 
 def fill_with_zeros(a: array):
     """
@@ -79,7 +76,6 @@ def show(a: array):
     for row_index in range(0, 9):
         print(" R" + str(row_index + 1) + "  ", end=" ")
         for column_index in range(0, 9):
-            # print(str(a[i, j]) + " ", end=" ")
             print(str(trunc(a[row_index, column_index])) + " ", end=" ")
         print()
     print()
@@ -269,7 +265,6 @@ def count_zeros_in_column(a: array, column_index: int, verbose: bool = False) ->
     for j in range(0, 9):
         if a[j, column_index] == zero:
             count_nulls += 1
-    # print("Column " + str(column_nr+1) + " has " + str(count_nulls) + " nulls.")
     if verbose:
         if count_nulls == 0 or count_nulls == 1:
             print("Nulls in C" + str(column_index + 1) + " : " + str(count_nulls) + " *")
@@ -290,12 +285,8 @@ def column_has_duplicates(a: array, column_index: int) -> bool:
     list_without_zeros = []
     for i in range(0, 9):
         if trunc(a[i, column_index]) != 0:
-            # print("Adding : " + str(trunc(a[row_index, i])))
             list_without_zeros += [trunc(a[i, column_index])]
-    # print("-" + str(list_without_zeros))
     _duplicates = duplicates(list_without_zeros)
-    # print("--" + str(list(_duplicates)))
-    # sys.exit()
     return len(list(_duplicates)) > 0
 
 
@@ -310,7 +301,6 @@ def predictable_numbers_in_column(a: array, column_index: int) -> array:
     for j in range(0, 9):
         if a[j, column_index] != zero:
             numbers = numpy.setdiff1d(numbers, a[j, column_index])
-            # print("->" + str(numbers_1_to_10))
     return numbers
 
 
@@ -325,7 +315,6 @@ def predictable_numbers_in_row(a: array, row_index: int) -> array:
     for j in range(0, 9):
         if a[row_index, j] != zero:
             numbers = numpy.setdiff1d(numbers, a[row_index, j])
-            # print("->" + str(numbers_1_to_10))
     return numbers
 
 
@@ -495,8 +484,6 @@ def predictable_numbers_in_position(a: array, row_index: int, column_index: int,
     if a[row_index, column_index] != zero:
         if verbose:
             print("Found value != " + str(zero) + " : " + str(a[row_index, column_index]))
-            # print("Type a[column_index, row_index] : " + str(type(a[row_index, column_index])))
-            # print("Type zero                       : " + str(type(zero)))
             print("row_index : " + str(row_index))
             print("column_index : " + str(column_index))
         return array([trunc(a[row_index, column_index])])
@@ -534,7 +521,6 @@ def save_predictable_numbers_in_positions(a: array, verbose: bool = False) -> in
             if verbose:
                 print(
                     "R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(current_predictable_numbers))
-    # print("Unknown positions                : " + str(unknown_positions))
     return save_predictable_positions
 
 
@@ -556,32 +542,6 @@ def predictable_numbers_in_positions(a: array, verbose: bool = False):
             print("R" + str(row_index + 1) + ", C" + str(column_index + 1) + " : " + str(current_predictable_numbers))
 
 
-# def get_best_position_indices_for_branching(a: array, verbose: bool = False) -> []:
-#     """
-#     Search through all positions and return the row_index and column_index of the first position
-#     with the lowest count of possible numbers.
-#     :param verbose:
-#     :param a: A two-dimensional array with the sudoku data
-#     :return: A list with the row_index and the column_index
-#     """
-#     best_position = []
-#     current_possibilities = 10
-#     for row_index in range(0, 9):
-#         for column_index in range(0, 9):
-#             if a[row_index, column_index] != 0:
-#                 continue
-#             current_predictable_numbers = predictable_numbers_in_position(a, row_index, column_index)
-#             if len(current_predictable_numbers) < current_possibilities:
-#                 current_possibilities = len(current_predictable_numbers)
-#                 best_position = [row_index, column_index]
-#                 # When can quit here if we already found a position with the lowest possibilities (=2)
-#                 if current_possibilities == 2:
-#                     return best_position
-#     if verbose:
-#         print("Best position indices for branching : " + str(best_position))
-#     return best_position
-
-
 def get_all_position_indices_for_branching(a: array, verbose: bool = False) -> []:
     """
     Search through all positions and return an array of all [row_index, column_index] positions
@@ -591,12 +551,10 @@ def get_all_position_indices_for_branching(a: array, verbose: bool = False) -> [
     :return: An array of [row_index and the column_index] combinations
     """
     all_positions = []
-    current_possibilities = 10
     for row_index in range(0, 9):
         for column_index in range(0, 9):
             if a[row_index, column_index] != 0:
                 continue
-            # all_positions += [row_index, column_index]
             all_positions.append([row_index, column_index])
     return all_positions
 
@@ -765,8 +723,9 @@ def main():
         iterations += 1
         iterations_from_latest_branch += 1
         print()
-        print("== Branch point " + branch_point_tree.get_branch_point_info(current_branch_point) + " / Iteration #" + str(
-            iterations_from_latest_branch) + " ==")
+        print(
+            "== Branch point " + branch_point_tree.get_branch_point_info(current_branch_point) + " / Iteration #" + str(
+                iterations_from_latest_branch) + " ==")
 
         clear_console()
         show(current_array)
@@ -780,7 +739,8 @@ def main():
             print("Current branch point        : " + branch_point_tree.get_branch_point_info(current_branch_point))
             print("Current branch point parent : " + branch_point_tree.get_branch_point_info(current_branch_point))
 
-            if is_deadlocked(current_array, _verbose) or rows_have_duplicates(current_array) or columns_have_duplicates(current_array):
+            if is_deadlocked(current_array, _verbose) or rows_have_duplicates(current_array) or columns_have_duplicates(
+                    current_array):
                 if is_deadlocked(current_array):
                     print("Deadlock detected!")
                 if rows_have_duplicates(current_array):
@@ -805,10 +765,11 @@ def main():
                             sys.exit()
                     print("Went up " + str(levels_up) + " levels in branch point tree to find a left possibility.")
 
-                print("Reverting array to branch point " + branch_point_tree.get_branch_point_info(current_branch_point))
-                # print("Branch point depth is " + str(branch_point_tree.get_depth(current_branch_point)))
+                print(
+                    "Reverting array to branch point " + branch_point_tree.get_branch_point_info(current_branch_point))
                 current_array = current_branch_point.get_array()
-                print("Possibilities left in current branch point : " + str(current_branch_point.get_possibilities_left()))
+                print("Possibilities left in current branch point : " + str(
+                    current_branch_point.get_possibilities_left()))
 
                 # modify current matrix with a new number and try it out
                 available_number = current_branch_point.pop_possible_number()

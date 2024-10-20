@@ -50,7 +50,6 @@ class BranchPoint:
         self._id = uuid4()
         self._parent_id = parent_id
 
-    # def __str__(self):
     def print(self):
         """
         Print out the information of this branch point
@@ -172,9 +171,6 @@ class BranchPoint:
         """
         possibility = None
         if self.has_possibilities_left():
-            # possibility = self._possibilities_left[len(self._possibilities_left)-1]
-            # self._possibilities_left = numpy.delete(self._possibilities_left, len(self._possibilities_left)-1)
-
             possibility = self._possibilities_left[0]
             self._possibilities_left = numpy.delete(self._possibilities_left, 0)
         return possibility
@@ -195,15 +191,6 @@ class BranchPoint:
         if isinstance(other, BranchPoint):
             if (numpy.array_equal(self._a, other._a) and self.get_branch_position_row() == other.get_branch_position_row()
                     and self.get_branch_position_column() == other.get_branch_position_column()):
-                # print("First array:")
-                # print(self._a)
-                # print("First coordinates:")
-                # print("R" + str(self.get_branch_position_row()) + ", C" + str(self.get_branch_position_column()))
-                #
-                # print("Second array:")
-                # print(other._a)
-                # print("Second coordinates:")
-                # print("R" + str(other.get_branch_position_row()) + ", C" + str(other.get_branch_position_column()))
                 return True
             else:
                 return False
@@ -236,4 +223,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-    # def get_parent_branch_point(branch_point: SudokuBranchPoint, branch_point_array: array([SudokuBranchPoint]) -> SudokuBranchPoint:

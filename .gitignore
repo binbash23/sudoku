@@ -1,2 +1,5 @@
 .idea
 source/__pycache__
+source/sudoku.spec
+source/dist
+source/build
