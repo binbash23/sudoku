@@ -17,6 +17,7 @@ from numpy import array
 from branch_point import BranchPoint
 from branch_point_tree import BranchPointTree
 from iteration_utilities import duplicates
+import os
 
 # Variables section
 zero = 0
@@ -33,6 +34,16 @@ branch_point_tree = None
 
 
 # Functions section
+
+def clear_console():
+    """
+    Clear the console
+    :return:
+    """
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 def fill_with_zeros(a: array):
     """
@@ -757,6 +768,7 @@ def main():
         print("== Branch point " + branch_point_tree.get_branch_point_info(current_branch_point) + " / Iteration #" + str(
             iterations_from_latest_branch) + " ==")
 
+        clear_console()
         show(current_array)
         analyze_sudoku(current_array, _verbose)
         if is_solved(current_array):
