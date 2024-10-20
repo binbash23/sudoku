@@ -61,5 +61,10 @@ Iterations    : 6
 *** Bingo! Sudoku is solved. ***
 ```
 
+If you want to create a binary of the python code, try this:
+```
+$ pyinstaller sudoku.py --onefile --clean
+```
+The pyinstaller will create a binary in the folder "dist" for you.
 
 Happy coding, Jens
