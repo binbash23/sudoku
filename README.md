@@ -16,7 +16,7 @@ $ cat 001_sudoku.txt
 0,7,3,9,0,8,0,6,0
 0,0,0,7,6,0,4,0,0
 ```
-The sudoku file is expected to have one line header and all numbers seperated by comma (',').
+The sudoku file is expected to have one header line and all numbers seperated by comma (',').
 
 Now run the sudoku.py program
 ```
