@@ -35,7 +35,9 @@ class BranchPointTree:
             print()
             print(str(i + 1) + ". Element:\n")
             if self._branch_point_array[i] is not None:
+                # print(self.get_branch_point_info(self._branch_point_array[i]))
                 self._branch_point_array[i].print()
+                print("Depth                  : " + str(self.get_depth(self._branch_point_array[i])))
             i += 1
         print()
 
